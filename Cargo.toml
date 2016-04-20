@@ -1,0 +1,6 @@
+[package]
+name = "anduin"
+version = "0.0.1"
+authors = ["Nikita <humb1t@yandex.ru>"]
+
+[dependencies]
