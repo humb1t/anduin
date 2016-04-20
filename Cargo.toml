@@ -28,9 +28,4 @@ keywords = ["game-engine", "vulkan", "game", "engine"]
 # separated with a `/`.
 license = "AGPL-3.0"
 
-# If a project is using a nonstandard license, then this key may be specified in
-# lieu of the above key and must point to a file relative to this manifest
-# (similar to the readme key).
-license-file = "http://choosealicense.com/licenses/agpl-3.0/"
-
 [dependencies]
