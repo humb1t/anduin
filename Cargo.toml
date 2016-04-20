@@ -2,5 +2,35 @@
 name = "anduin"
 version = "0.0.1"
 authors = ["Nikita <humb1t@yandex.ru>"]
+exclude = [
+    "target/*"
+]
+# A short blurb about the package. This is not rendered in any format when
+# uploaded to crates.io (aka this is not markdown).
+description = "This is my first project on rust and my first attemp to create own game engine. It's aim - build fast, safe, usefriendly game-engine based on new technologies/languages such as rust and vulkan api."
+
+# These URLs point to more information about the repository.
+documentation = "https://gitlab.com/humb1t/anduin"
+homepage = "https://gitlab.com/humb1t/anduin"
+repository = "https://gitlab.com/humb1t/anduin"
+
+# This points to a file in the repository (relative to this `Cargo.toml`). The
+# contents of this file are stored and indexed in the registry.
+readme = "README.md"
+
+# This is a small list of keywords used to categorize and search for this
+# package.
+keywords = ["game-engine", "vulkan", "game", "engine"]
+
+# This is a string description of the license for this package. Currently
+# crates.io will validate the license provided against a whitelist of known
+# license identifiers from http://spdx.org/licenses/. Multiple licenses can be
+# separated with a `/`.
+license = "AGPL-3.0"
+
+# If a project is using a nonstandard license, then this key may be specified in
+# lieu of the above key and must point to a file relative to this manifest
+# (similar to the readme key).
+license-file = "http://choosealicense.com/licenses/agpl-3.0/"
 
 [dependencies]
