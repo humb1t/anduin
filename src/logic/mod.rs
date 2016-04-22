@@ -1,6 +1,6 @@
 mod scene;
 mod rules;
-mod lcm;
+pub mod lcm;
 mod physic;
 mod ai;
 

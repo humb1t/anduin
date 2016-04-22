@@ -7,7 +7,11 @@ mod net;
 mod utils;
 
 use logic::ApplicationListener;
+use logic::lcm::Runnable;
 
+/**
+* Example app
+*/
 impl ApplicationListener for logic::Application {
     fn new(name: &'static str, platform: &'static str) -> logic::Application {
         logic::Application {name: name, platform: platform}
@@ -35,7 +39,7 @@ impl ApplicationListener for logic::Application {
     }
 }
 
-fn logger(text: &str)
+pub fn logger(text: &str)
 {
     println!("LOG: {}", text);
 }
@@ -44,17 +48,8 @@ fn main() {
     logger("start main");
     let application: logic::Application =
         ApplicationListener::new("Anduin", "desktop");
-        application.create();
-        'main: loop {
-            logger("start main loop");
-            for i in 0..5 {
-                let step = format!("{}", i);
-                logger(&step);
-                application.render();
-            }
-            logger("end main loop");
-            break 'main;
-        }
-        application.dispose();
+    let game_loop: logic::lcm::Loop = Runnable::new(true);
+    game_loop.run(application, 60);
+
     logger("end main");
 }
