@@ -23,7 +23,7 @@ pub trait ApplicationListener {
             println!("Resize to {}x{}",
              width, height);
     }
-
+    fn update(&self);
     fn render(&self);
     fn pause(&self);
     fn resume(&self);

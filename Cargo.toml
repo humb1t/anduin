@@ -29,3 +29,4 @@ keywords = ["game-engine", "vulkan", "game", "engine"]
 license = "AGPL-3.0"
 
 [dependencies]
+time = "0.1"
