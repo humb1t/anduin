@@ -1,2 +1,6 @@
+image: iceyec/ci-rust
+
 build:
-  script: "cargo build"
+  script:
+    - curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- -y --disable-sudo
+    - cargo build --release --verbose
