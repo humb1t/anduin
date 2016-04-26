@@ -10,6 +10,7 @@ mod utils;
 
 use logic::ApplicationListener;
 use logic::lcm::Runnable;
+use input::Event;
 
 /**
 * Test Game Example
@@ -27,7 +28,8 @@ impl ApplicationListener for logic::Application {
         self.platform
     }
     fn update(&self) {
-        println!("update");
+        let update_event = Event {name: "update_event"};
+        update_event.execute();
     }
     fn render(&self) {
         println!("render");
