@@ -1,7 +1,2 @@
 build:
   script: "cargo build"
-  tags:
-    - rust
-    - anduin
-    - shared
-    - linux
