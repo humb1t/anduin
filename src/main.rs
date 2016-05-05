@@ -38,9 +38,11 @@ impl ApplicationListener for logic::Application {
         //Render
         let mut keyboard: keyboard::Keyboard = InputProcessor::new();
         keyboard.key_down(5);
-        let update_event = events::BaseEvent {name: "update_event".to_string()};
         let mut event_queue = events::EventQueue::<events::BaseEvent> {event_queue: VecDeque::new()};
-        event_queue.add_event(update_event);
+        let update_event = events::BaseEvent {name: "update_event".to_string()};
+        event_queue.add_event(update_event.clone());
+        event_queue.add_event(update_event.clone());
+        event_queue.add_event(update_event.clone());
         event_queue.update();
     }
     fn render(&self) {

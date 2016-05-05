@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 use std::collections::HashMap;
 
-enum Buttons {
+/*enum Buttons {
     LEFT, RIGHT, MIDDLE, BACK, FORWARD
 }
 
@@ -15,7 +15,7 @@ impl Buttons {
             Buttons::FORWARD => 4
         }
     }
-}
+}*/
 
 #[derive(Debug)]
 pub struct KeyboardEvent {

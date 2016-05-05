@@ -17,6 +17,7 @@ To allow maximum flexibility for which parties can be interested,
 these queues tend to be more globally visible.
 */
 use std::collections::VecDeque;
+use std::cmp;
 
 #[derive(Clone, Debug)]
 pub struct BaseEvent {
@@ -44,15 +45,16 @@ pub struct EventQueue<T: Event> {
 impl<T: Event> EventQueue<T> {
 
     pub fn update(&mut self){
-        let drain_size = self.event_queue.len();
-        for current_event in self.event_queue.drain(drain_size..) {
+        let drain_size = cmp::min(self.event_queue.len(), 4);//replace with threads quantity
+        for current_event in self.event_queue.drain(0..drain_size) {
             &current_event.execute();
         }
     }
+
     pub fn add_event(&mut self, event: T){
-        //self.event_queue.push(Box::new(event));
         self.event_queue.push_back(event);
     }
+
     pub fn add_events(&mut self, events: Vec<T>){
         self.event_queue.extend(events);
     }
