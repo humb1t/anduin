@@ -10,9 +10,10 @@ mod utils;
 
 use logic::ApplicationListener;
 use logic::lcm::Runnable;
-use logic::events::Event;
+use logic::events;
 use input::keyboard;
 use input::InputProcessor;
+use std::collections::VecDeque;
 
 /**
 * Test Game Example
@@ -37,9 +38,10 @@ impl ApplicationListener for logic::Application {
         //Render
         let mut keyboard: keyboard::Keyboard = InputProcessor::new();
         keyboard.key_down(5);
-        println!("keyboard: {:?}", keyboard);
-        let update_event = logic::events::BaseEvent {name: "update_event".to_string()};
-        update_event.execute();
+        let update_event = events::BaseEvent {name: "update_event".to_string()};
+        let mut event_queue = events::EventQueue::<events::BaseEvent> {event_queue: VecDeque::new()};
+        event_queue.add_event(update_event);
+        event_queue.update();
     }
     fn render(&self) {
         println!("render");
