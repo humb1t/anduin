@@ -1,47 +1,45 @@
+pub mod keyboard;
+
 pub trait InputProcessor {
-    fn key_down(keycode: i32) -> bool;
-	fn key_up(keycode: i32) -> bool;
-	fn key_typed(character: char) -> bool;
-	fn touch_down(screenX: i32, screenY: i32, pointer: i32, button: i32) -> bool;
-	fn touch_up(screenX: i32, screenY: i32, pointer: i32, button: i32) -> bool;
-	fn touch_dragged(screenX: i32, screenY: i32, pointer: i32) -> bool;
-	fn mouse_moved(screenX: i32, screenY: i32) -> bool;
-	fn scrolled(amount: i32) -> bool;
-}
-
-#[derive(Clone, Debug)]
-pub struct Event {
-    pub name: &'static str
-}
-
-impl Event {
-    pub fn execute(&self)
+    fn new() -> Self;
+    fn key_down(&mut self, keycode: i32) -> bool
     {
-         println!("Event name: {}", self.name);
+        println!("key_down");
+        false
     }
-}
-
-pub struct EventQueue {
-    events: Vec<Event>,
-    event_queue: Vec<Event>
-}
-
-impl EventQueue {
-    fn update(&mut self){
-        for event in self.event_queue.clone() {
-            process_event(&event);
-        }
-        self.events = self.event_queue.clone();
-        self.event_queue = Vec::new();
+	fn key_up(&mut self, keycode: i32) -> bool
+    {
+        println!("key_up");
+        false
     }
-    fn add_event(&mut self, event: Event){
-        self.event_queue.push(event);
+	fn key_typed(&self, character: char) -> bool
+    {
+        println!("key_typed");
+        false
     }
-    fn add_events(&mut self, events: Vec<Event>){
-        self.event_queue.extend(events);
+	fn touch_down(&self, screenX: i32, screenY: i32, pointer: i32, button: i32) -> bool
+    {
+        println!("touch_down");
+        false
     }
-}
-
-fn process_event(event: &Event) {
-    event.execute();
+	fn touch_up(&self, screenX: i32, screenY: i32, pointer: i32, button: i32) -> bool
+    {
+        println!("touch_up");
+        false
+    }
+	fn touch_dragged(&self, screenX: i32, screenY: i32, pointer: i32) -> bool
+    {
+        println!("touch_dragged");
+        false
+    }
+	fn mouse_moved(&self, screenX: i32, screenY: i32) -> bool
+    {
+        println!("mouse_moved");
+        false
+    }
+	fn scrolled(&self, amount: i32) -> bool
+    {
+        println!("scrolled");
+        false
+    }
 }

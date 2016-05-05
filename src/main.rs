@@ -3,14 +3,16 @@ extern crate time;
 mod audio;
 mod files;
 mod graphics;
-mod input;
-mod logic;
+pub mod input;
+pub mod logic;
 mod net;
 mod utils;
 
 use logic::ApplicationListener;
 use logic::lcm::Runnable;
-use input::Event;
+use logic::events::Event;
+use input::keyboard;
+use input::InputProcessor;
 
 /**
 * Test Game Example
@@ -28,7 +30,15 @@ impl ApplicationListener for logic::Application {
         self.platform
     }
     fn update(&self) {
-        let update_event = Event {name: "update_event"};
+        //Input
+        //Logic
+        //Physics
+        //Animation
+        //Render
+        let mut keyboard: keyboard::Keyboard = InputProcessor::new();
+        keyboard.key_down(5);
+        println!("keyboard: {:?}", keyboard);
+        let update_event = logic::events::BaseEvent {name: "update_event".to_string()};
         update_event.execute();
     }
     fn render(&self) {

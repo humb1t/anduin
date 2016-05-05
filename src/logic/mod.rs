@@ -3,6 +3,7 @@ mod rules;
 pub mod lcm;
 mod physic;
 mod ai;
+pub mod events;
 
 pub struct Application {
     pub name: &'static str,
