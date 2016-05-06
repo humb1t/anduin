@@ -31,13 +31,12 @@ impl ApplicationListener for logic::Application {
         self.platform
     }
     fn update(&self) {
+        let mut keyboard: keyboard::Keyboard = InputProcessor::new();
         //Input
         //Logic
         //Physics
         //Animation
         //Render
-        let mut keyboard: keyboard::Keyboard = InputProcessor::new();
-        keyboard.key_down(5);
         let mut event_queue = events::EventQueue::<events::BaseEvent> {event_queue: VecDeque::new()};
         let update_event = events::BaseEvent {name: "update_event".to_string()};
         event_queue.add_event(update_event.clone());

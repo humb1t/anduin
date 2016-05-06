@@ -30,3 +30,4 @@ license = "AGPL-3.0"
 
 [dependencies]
 time = "0.1"
+sfml = "0.11"

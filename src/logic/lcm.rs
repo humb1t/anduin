@@ -33,13 +33,14 @@ impl Runnable for Loop {
             println!("delta = {}", delta);
             let mut next_time = time::get_time().sec;
             let mut skipped_frames = 1;
-            println!("next_time = {}", next_time);
             while self.runned {
                 let curr_time = time::get_time().sec;
                 println!("curr_time = {}", curr_time);
                 println!("next_time = {}", next_time);
-                if (curr_time - next_time) > self.max_time_dif { next_time = curr_time; }
-                if curr_time>=next_time {
+                if (curr_time - next_time) > self.max_time_dif {
+                     next_time = curr_time; 
+                 }
+                if curr_time >= next_time {
                     next_time += delta;
                     app.update();
                     if (curr_time < next_time) || (skipped_frames > self.max_skipped_frames) {
@@ -51,7 +52,9 @@ impl Runnable for Loop {
                 } else {
                     let time_to_sleep = next_time - curr_time;
                     println!("time_to_sleep = {}", time_to_sleep);
-                    if time_to_sleep > 0 { thread::sleep(Duration::from_secs(time_to_sleep as u64)); }
+                    if time_to_sleep > 0 {
+                         thread::sleep(Duration::from_secs(time_to_sleep as u64));
+                     }
                 }
             }
             app.dispose();

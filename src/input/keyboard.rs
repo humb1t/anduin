@@ -1,3 +1,5 @@
+extern crate sfml;
+
 use std::collections::VecDeque;
 use std::collections::HashMap;
 
