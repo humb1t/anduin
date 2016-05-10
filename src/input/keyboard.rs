@@ -1,22 +1,6 @@
 use std::collections::VecDeque;
 use std::collections::HashMap;
 
-/*enum Buttons {
-    LEFT, RIGHT, MIDDLE, BACK, FORWARD
-}
-
-impl Buttons {
-    fn get_code(self) -> i32 {
-        match self {
-            Buttons::LEFT => 0,
-            Buttons::RIGHT => 1,
-            Buttons::MIDDLE => 2,
-            Buttons::BACK => 3,
-            Buttons::FORWARD => 4
-        }
-    }
-}*/
-
 #[derive(Debug)]
 pub struct KeyboardEvent {
     pub name: String,

@@ -8,6 +8,7 @@ mod ai;
 pub mod events;
 
 use graphics::Graphics;
+use input::Input;
 
 use std::process;
 use self::glfw::{Action, Key};

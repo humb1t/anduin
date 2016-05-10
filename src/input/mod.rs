@@ -5,8 +5,24 @@ pub struct Input {
 }
 
 impl Input {
-    
+
 }
+
+/*enum Buttons {
+    LEFT, RIGHT, MIDDLE, BACK, FORWARD
+}
+
+impl Buttons {
+    fn get_code(self) -> i32 {
+        match self {
+            Buttons::LEFT => 0,
+            Buttons::RIGHT => 1,
+            Buttons::MIDDLE => 2,
+            Buttons::BACK => 3,
+            Buttons::FORWARD => 4
+        }
+    }
+}*/
 
 pub trait InputProcessor {
     fn new() -> Self;
