@@ -2,12 +2,5 @@ image: iceyec/ci-rust
 
 build:
   script:
-    - apt-get install cmake libXxf86vm-dev libxinerama-dev libxcursor-dev
-    - git clone https://github.com/glfw/glfw.git
-    - cd glfw
-    - git checkout 3.0.3
-    - cmake -DBUILD_SHARED_LIBS=ON
-    - make
-    - make install
     - curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- -y --disable-sudo
     - cargo build --release --verbose
