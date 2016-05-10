@@ -2,10 +2,6 @@ image: iceyec/ci-rust
 
 build:
   before_script:
-    - sudo add-apt-repository --yes ppa:kalakris/cmake
-    - sudo apt-get update -qq
-    - sudo apt-get install cmake
-    - sudo apt-get install libXxf86vm-dev
     - git clone https://github.com/glfw/glfw.git
     - cd glfw
     - git checkout 3.0.3
