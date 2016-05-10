@@ -1,6 +1,19 @@
 image: iceyec/ci-rust
 
 build:
+  before_install:
+    # This ppa provides cmake 2.8.11, which travis doesn't have yet
+    - sudo add-apt-repository --yes ppa:kalakris/cmake
+    - sudo apt-get update -qq
+  install:
+    - sudo apt-get install cmake
+    - sudo apt-get install libXxf86vm-dev
+    - git clone https://github.com/glfw/glfw.git
+    - cd glfw
+    - git checkout 3.0.3
+    - cmake -DBUILD_SHARED_LIBS=ON
+    - make
+    - sudo make install
   script:
     - curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- -y --disable-sudo
     - cargo build --release --verbose

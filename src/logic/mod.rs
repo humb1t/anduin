@@ -8,6 +8,7 @@ mod ai;
 pub mod events;
 
 use graphics::Graphics;
+
 use std::process;
 use self::glfw::{Action, Key};
 
@@ -20,6 +21,7 @@ pub struct Application<T: ApplicationListener> {
     pub name: &'static str,
     pub platform: &'static str,
     pub graphics: Graphics,
+    pub input: Input,
     pub app_listener: T
 }
 

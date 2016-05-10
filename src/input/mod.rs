@@ -1,5 +1,13 @@
 pub mod keyboard;
 
+pub struct Input {
+
+}
+
+impl Input {
+    
+}
+
 pub trait InputProcessor {
     fn new() -> Self;
     fn key_down(&mut self, keycode: i32) -> bool;
