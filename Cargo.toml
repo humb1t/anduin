@@ -30,3 +30,7 @@ license = "AGPL-3.0"
 
 [dependencies]
 time = "0.1"
+
+[dependencies.glfw]
+git = "https://github.com/bjz/glfw-rs.git"
+default-features = false

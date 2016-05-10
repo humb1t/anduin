@@ -7,42 +7,31 @@ pub mod input;
 pub mod logic;
 mod net;
 mod utils;
+pub mod core;
 
-use logic::ApplicationListener;
-use logic::lcm::Runnable;
-use logic::events;
-use input::keyboard;
-use input::InputProcessor;
-use std::collections::VecDeque;
+use logic::{ApplicationListener, Application, Game};
+use logic::lcm::GameLoop;
+//use input::keyboard;
+//use input::InputProcessor;
 
 /**
 * Test Game Example
 */
-impl ApplicationListener for logic::Application {
-    fn new(name: &'static str, platform: &'static str) -> logic::Application {
-        logic::Application {name: name, platform: platform}
+impl ApplicationListener for Game {
+    fn init(&self) {
+        println!("init");
     }
-
-    fn name(&self) -> &'static str {
-        self.name
-    }
-
-    fn platform(&self) -> &'static str {
-        self.platform
-    }
-    fn update(&self) {
-        let mut keyboard: keyboard::Keyboard = InputProcessor::new();
+    fn update(&mut self) {
+        //let mut keyboard: keyboard::Keyboard = InputProcessor::new();
         //Input
         //Logic
         //Physics
         //Animation
         //Render
-        let mut event_queue = events::EventQueue::<events::BaseEvent> {event_queue: VecDeque::new()};
-        let update_event = events::BaseEvent {name: "update_event".to_string()};
-        event_queue.add_event(update_event.clone());
-        event_queue.add_event(update_event.clone());
-        event_queue.add_event(update_event.clone());
-        event_queue.update();
+    }
+    fn resize(&self, width: i32, height: i32) {
+            println!("Resize to {}x{}",
+             width, height);
     }
     fn render(&self) {
         println!("render");
@@ -65,10 +54,9 @@ pub fn logger(text: &str)
 
 fn main() {
     logger("start main");
-    let application: logic::Application =
-        ApplicationListener::new("Anduin", "desktop");
-    let game_loop: logic::lcm::Loop = Runnable::new(true);
-    game_loop.run(application, 1);//replace with graphics::getDeltaTime()
-
+    let mut application: Application<Game> = Application::new("Anduin", "desktop", Game{});
+    let game_loop = GameLoop::new();
+    game_loop.run(&mut application);//replace with graphics::getDeltaTime()
+    application.exit();
     logger("end main");
 }
