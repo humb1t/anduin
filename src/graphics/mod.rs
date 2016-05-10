@@ -46,7 +46,7 @@ impl Graphics {
             graphics_type: "GLFW".to_string(),
             display_mode: DisplayMode {width: width, height: height, refresh_rate: 1, bits_per_pixel: 1},
             frame_id: 0,
-            delta_time: 10,
+            delta_time: 2,
             fps: 0,
             monitors: vec![],
             glfw: glfw,

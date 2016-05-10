@@ -49,5 +49,6 @@ impl GameLoop {
                      }
                 }
             }
+            app.exit();
         }
 }

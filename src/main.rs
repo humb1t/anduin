@@ -11,8 +11,6 @@ pub mod core;
 
 use logic::{ApplicationListener, Application, Game};
 use logic::lcm::GameLoop;
-//use input::keyboard;
-//use input::InputProcessor;
 
 /**
 * Test Game Example
@@ -22,7 +20,6 @@ impl ApplicationListener for Game {
         println!("init");
     }
     fn update(&mut self) {
-        //let mut keyboard: keyboard::Keyboard = InputProcessor::new();
         //Input
         //Logic
         //Physics
@@ -56,7 +53,7 @@ fn main() {
     logger("start main");
     let mut application: Application<Game> = Application::new("Anduin", "desktop", Game{});
     let game_loop = GameLoop::new();
-    game_loop.run(&mut application);//replace with graphics::getDeltaTime()
+    game_loop.run(&mut application);
     application.exit();
     logger("end main");
 }

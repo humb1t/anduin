@@ -32,24 +32,13 @@ impl<T: ApplicationListener> Application<T> {
              name: name,
              platform: platform,
              graphics: Graphics::new(300, 300),
+             input: Input::new(),
              app_listener: app_listener
          }
     }
 
     pub fn process_input(&mut self){
-        self.graphics.glfw.poll_events();
-        for (_, event) in glfw::flush_messages(&self.graphics.events) {
-                match event {
-                    glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
-                        println!("{:?}", event);
-                        self.graphics.window.set_should_close(true);
-                        self.exit()
-                    },
-                    _ => {
-                        println!("{:?}", event);
-                    }
-                }
-        }
+        self.input.update(&mut self.graphics);
     }
 
     pub fn exit(&self){
