@@ -1,19 +1,20 @@
 image: iceyec/ci-rust
 
 build:
-  script:
-# some native deps
+  before_script:
+    # some native deps
     - sudo apt-get -y install software-properties-common python-software-properties
     - sudo add-apt-repository ppa:git-core/ppa
     - sudo apt-get update
-    - sudo apt-get -y install libXxf86vm-dev git
+    - sudo apt-get -y install cmake libXxf86vm-dev libxinerama-dev libxcursor-dev git
     # glfw
     - git clone https://github.com/glfw/glfw.git
     - cd glfw
     - git checkout 3.0.3
-    - cmake -DBUILD_SHARED_LIBS=ON .
+    - cmake -DBUILD_SHARED_LIBS=ON
     - make
     - sudo make install
     - cd ..
+  script:
     - curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- -y --disable-sudo
     - cargo run --verbose
