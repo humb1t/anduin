@@ -11,29 +11,22 @@ use graphics::Graphics;
 use input::Input;
 
 use std::process;
-use self::glfw::{Action, Key};
-
-pub struct Game {
-
-}
 
 //Central object - static bean
-pub struct Application<T: ApplicationListener> {
+pub struct Application {
     pub name: &'static str,
     pub platform: &'static str,
     pub graphics: Graphics,
-    pub input: Input,
-    pub app_listener: T
+    pub input: Input
 }
 
-impl<T: ApplicationListener> Application<T> {
-    pub fn new(name: &'static str, platform: &'static str, app_listener: T) -> Self {
+impl Application {
+    pub fn new(name: &'static str, platform: &'static str) -> Self {
          Application {
              name: name,
              platform: platform,
              graphics: Graphics::new(300, 300),
-             input: Input::new(),
-             app_listener: app_listener
+             input: Input::new()
          }
     }
 
@@ -42,7 +35,7 @@ impl<T: ApplicationListener> Application<T> {
     }
 
     pub fn exit(&self){
-        self.app_listener.dispose();
+        self.dispose();
         process::exit(0);
     }
 }

@@ -9,13 +9,13 @@ mod net;
 mod utils;
 pub mod core;
 
-use logic::{ApplicationListener, Application, Game};
+use logic::{ApplicationListener, Application};
 use logic::lcm::GameLoop;
 
 /**
 * Test Game Example
 */
-impl ApplicationListener for Game {
+impl ApplicationListener for Application {
     fn init(&self) {
         println!("init");
     }
@@ -51,7 +51,7 @@ pub fn logger(text: &str)
 
 fn main() {
     logger("start main");
-    let mut application: Application<Game> = Application::new("Anduin", "desktop", Game{});
+    let mut application = Application::new("Anduin", "desktop");
     let game_loop = GameLoop::new();
     game_loop.run(&mut application);
     application.exit();

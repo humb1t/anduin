@@ -2,6 +2,7 @@ extern crate glfw;
 
 use self::glfw::{Action, Key, WindowEvent};
 use graphics::Graphics;
+use std::sync::Arc;
 
 const  KEY_CODE_MAX: i32 = 255;
 
@@ -9,9 +10,7 @@ enum Peripheral {
     HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope
 }
 
-pub struct Input {
-
-}
+pub struct Input;
 
 impl Input {
         pub fn new() -> Self {
@@ -28,8 +27,6 @@ impl Input {
         pub fn is_key_pressed(&self, key_code: i32) -> bool {
             false
         }
-
-
 
         fn handle_window_event(window: &mut glfw::Window, (time, event): (f64, glfw::WindowEvent)) {
             match event {
@@ -91,10 +88,12 @@ pub trait InputProcessor {
 	fn scrolled(&self, amount: i32) -> bool;*/
 }
 
+#[allow(dead_code)]
 enum Buttons {
  LEFT, RIGHT, MIDDLE, BACK, FORWARD
 	}
 
+#[allow(dead_code)]
 enum Keys {
     ANY_KEY,NUM_0
 ,NUM_1
