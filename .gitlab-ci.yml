@@ -3,7 +3,7 @@ image: iceyec/ci-rust
 build:
   script:
 # some native deps
-    - sudo apt-get -y install libXxf86vm-dev
+    - sudo apt-get -y install libXxf86vm-dev git
     # glfw
     - git clone https://github.com/glfw/glfw.git
     - cd glfw
