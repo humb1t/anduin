@@ -2,5 +2,15 @@ image: iceyec/ci-rust
 
 build:
   script:
+# some native deps
+    - sudo apt-get install libXxf86vm-dev
+    # glfw
+    - git clone https://github.com/glfw/glfw.git
+    - cd glfw
+    - git checkout 3.0.3
+    - cmake -DBUILD_SHARED_LIBS=ON .
+    - make
+    - sudo make install
+    - cd ..
     - curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- -y --disable-sudo
-    - cargo build --release --verbose
+    - cargo run --verbose
