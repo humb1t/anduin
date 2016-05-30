@@ -11,7 +11,7 @@ build:
     - git clone https://github.com/glfw/glfw.git
     - cd glfw
     - git checkout 3.0.3
-    - sudo apt-get build-dep glfw
+    - sudo apt-get -y build-dep glfw
     - cmake -DBUILD_SHARED_LIBS=ON
     - make
     - sudo make install
