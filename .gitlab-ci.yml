@@ -16,6 +16,7 @@ build:
     - make
     - sudo make install
     - cd ..
+    - export LD_LIBRARY_PATH=/usr/local/lib
   script:
     - curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- -y --disable-sudo
     - cargo run --verbose
