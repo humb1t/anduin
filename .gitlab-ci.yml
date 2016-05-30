@@ -6,7 +6,7 @@ build:
     - sudo apt-get -y install software-properties-common python-software-properties
     - sudo add-apt-repository ppa:git-core/ppa
     - sudo apt-get update
-    - sudo apt-get -y install cmake libXxf86vm-dev libxinerama-dev libxcursor-dev git
+    - sudo apt-get -y install cmake libXxf86vm-dev libxinerama-dev libxcursor-dev git xorg-dev
     # glfw
     - git clone https://github.com/glfw/glfw.git
     - cd glfw
