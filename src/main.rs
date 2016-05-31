@@ -1,4 +1,5 @@
 extern crate time;
+extern crate glfw;
 
 mod audio;
 mod files;
@@ -44,6 +45,21 @@ impl ApplicationListener for Application {
     }
 }
 
+pub struct InputProcessorStuct;
+
+impl input::InputProcessor for InputProcessorStuct{
+    fn key_down(&self, keycode: glfw::Key) -> bool
+    {
+        println!("Key down {:?}", keycode);
+        false
+    }
+	fn key_up(&self, keycode: glfw::Key) -> bool
+    {
+        println!("Key up {:?}", keycode);
+        false
+    }
+}
+
 pub fn logger(text: &str)
 {
     println!("LOG: {}", text);
@@ -53,6 +69,7 @@ fn main() {
     logger("start main");
     let mut application = Application::new("Anduin", "desktop");
     let game_loop = GameLoop::new();
+    application.input.add_input_processor(Box::new(InputProcessorStuct{}));
     game_loop.run(&mut application);
     application.exit();
     logger("end main");

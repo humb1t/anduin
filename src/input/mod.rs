@@ -21,6 +21,11 @@ impl Input {
             }
         }
 
+        pub fn add_input_processor(&mut self, input_processor: Box<InputProcessor>)
+        {
+            self.input_processors.push(input_processor);
+        }
+
         pub fn update(&mut self, graphics: &mut Graphics) {
                 graphics.glfw.poll_events();
                 for event in glfw::flush_messages(&graphics.events) {
@@ -66,6 +71,12 @@ impl Input {
                             &self.keys_states.insert(key, true);
                             for processor in &self.input_processors {
                                 processor.key_down(key);
+                            }
+                        },
+                        (_, glfw::Action::Release) => {
+                            &self.keys_states.insert(key, false);
+                            for processor in &self.input_processors {
+                                processor.key_up(key);
                             }
                         },
                         _ => {}
