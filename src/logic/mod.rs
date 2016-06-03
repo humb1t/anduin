@@ -25,7 +25,7 @@ impl Application {
          Application {
              name: name,
              platform: platform,
-             graphics: Graphics::new(300, 300),
+             graphics: Graphics::new(300, 300, name),
              input: Input::new()
          }
     }

@@ -30,6 +30,10 @@ license = "AGPL-3.0"
 
 [dependencies]
 time = "0.1"
+nphysics2d = "0.1.*"
+nphysics3d = "0.1.*"
+nalgebra = "0.8"
+ncollide = "0.9.1"
 
 [dependencies.glfw]
 git = "https://github.com/bjz/glfw-rs.git"

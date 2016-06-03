@@ -3,7 +3,7 @@ extern crate glfw;
 mod g2d;
 mod g3d;
 
-use self::glfw::{Context, WindowEvent};
+use self::glfw::{Context};
 use std::sync::mpsc::Receiver;
 
 pub struct DisplayMode {
@@ -28,15 +28,15 @@ pub struct Graphics {
     pub fps: u16,
     pub window: glfw::Window,
     pub glfw: glfw::Glfw,
-    pub events: Receiver<(f64, WindowEvent)>,
+    pub events: Receiver<(f64, glfw::WindowEvent)>,
     pub monitors: Vec<Monitor>
 }
 
 impl Graphics {
-    pub fn new(width: u32, height: u32) -> Self {
+    pub fn new(width: u32, height: u32, title: &str) -> Self {
         let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
 
-        let (mut window, events) = glfw.create_window(width, height, "Hello this is window", glfw::WindowMode::Windowed)
+        let (mut window, events) = glfw.create_window(width, height, title, glfw::WindowMode::Windowed)
             .expect("Failed to create GLFW window.");
 
         window.set_key_polling(true);
