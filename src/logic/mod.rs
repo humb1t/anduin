@@ -1,5 +1,3 @@
-extern crate glfw;
-
 mod scene;
 mod rules;
 pub mod lcm;

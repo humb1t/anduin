@@ -24,7 +24,7 @@ impl GameLoop {
         pub fn run(&self, app: &mut Application) {
             let mut next_time = time::get_time().sec;
             let mut skipped_frames = 1;
-            while !app.graphics.window.should_close() {
+            while !app.graphics.should_close {
                 app.process_input();
                 let curr_time = time::get_time().sec;
                 println!("curr_time = {}", curr_time);

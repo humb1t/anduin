@@ -1,6 +1,6 @@
 [package]
 name = "anduin"
-version = "0.0.1"
+version = "0.0.3"
 authors = ["Nikita <humb1t@yandex.ru>"]
 exclude = [
     "target/*"
@@ -34,7 +34,8 @@ nphysics2d = "0.1.*"
 nphysics3d = "0.1.*"
 nalgebra = "0.8"
 ncollide = "0.9.1"
-
-[dependencies.glfw]
-git = "https://github.com/bjz/glfw-rs.git"
-default-features = false
+gl = "*"
+libc = "*"
+vulkano = {git = "https://github.com/tomaka/vulkano.git"}
+vulkano-win = {git = "https://github.com/tomaka/vulkano.git"}
+winit = "0.5"

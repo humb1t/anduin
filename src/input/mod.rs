@@ -1,7 +1,8 @@
-extern crate glfw;
-
 use graphics::Graphics;
-use std::collections::BTreeMap;
+use std::collections::HashMap;
+
+extern crate winit;
+extern crate vulkano_win;
 
 #[allow(dead_code)]
 enum Peripheral {
@@ -10,14 +11,14 @@ enum Peripheral {
 
 pub struct Input {
     input_processors: Vec<Box<InputProcessor>>,
-    keys_states: BTreeMap<glfw::Key, bool>
+    keys_states: HashMap<winit::VirtualKeyCode, bool>
 }
 
 impl Input {
         pub fn new() -> Self {
             Input {
                 input_processors: Vec::new(),
-                keys_states:  BTreeMap::new()
+                keys_states:  HashMap::new()
             }
         }
 
@@ -27,40 +28,31 @@ impl Input {
         }
 
         pub fn update(&mut self, graphics: &mut Graphics) {
-                graphics.glfw.poll_events();
-                for event in glfw::flush_messages(&graphics.events) {
-                    Input::handle_window_event(self, &mut graphics.window, event);
+                for event in graphics.window.window().poll_events() {
+                    Input::handle_window_event(self, &graphics.window.window(), event);
                 }
         }
 
-        pub fn is_key_pressed(&self, key: glfw::Key) -> bool {
+        pub fn is_key_pressed(&self, key: winit::VirtualKeyCode) -> bool {
             match self.keys_states.get(&key) {
                 Some(value) => *value,
                 None => false
             }
         }
 
-        fn handle_window_event(&mut self, window: &mut glfw::Window, (time, event): (f64, glfw::WindowEvent)) {
+        fn handle_window_event(&mut self, window: &winit::Window, event: winit::Event) {
             match event {
-                glfw::WindowEvent::Pos(x, y)                      => window.set_title(&format!("Time: {:?}, Window pos: ({:?}, {:?})", time, x, y)),
-                glfw::WindowEvent::Size(w, h)                     => window.set_title(&format!("Time: {:?}, Window size: ({:?}, {:?})", time, w, h)),
-                glfw::WindowEvent::Close                          => println!("Time: {:?}, Window close requested.", time),
-                glfw::WindowEvent::Refresh                        => println!("Time: {:?}, Window refresh callback triggered.", time),
-                glfw::WindowEvent::Focus(true)                    => println!("Time: {:?}, Window focus gained.", time),
-                glfw::WindowEvent::Focus(false)                   => println!("Time: {:?}, Window focus lost.", time),
-                glfw::WindowEvent::Iconify(true)                  => println!("Time: {:?}, Window was minimised", time),
-                glfw::WindowEvent::Iconify(false)                 => println!("Time: {:?}, Window was maximised.", time),
-                glfw::WindowEvent::FramebufferSize(w, h)          => println!("Time: {:?}, Framebuffer size: ({:?}, {:?})", time, w, h),
-                glfw::WindowEvent::Char(character)                => println!("Time: {:?}, Character: {:?}", time, character),
-                glfw::WindowEvent::MouseButton(btn, action, mods) => println!("Time: {:?}, Button: {:?}, Action: {:?}, Modifiers: [{:?}]", time, glfw::DebugAliases(btn), action, mods),
-                glfw::WindowEvent::CursorPos(xpos, ypos)          => window.set_title(&format!("Time: {:?}, Cursor position: ({:?}, {:?})", time, xpos, ypos)),
-                glfw::WindowEvent::CursorEnter(true)              => println!("Time: {:?}, Cursor entered window.", time),
-                glfw::WindowEvent::CursorEnter(false)             => println!("Time: {:?}, Cursor left window.", time),
-                glfw::WindowEvent::Scroll(x, y)                   => window.set_title(&format!("Time: {:?}, Scroll offset: ({:?}, {:?})", time, x, y)),
-                glfw::WindowEvent::Key(key, scancode, action, mods) => {
-                    println!("Time: {:?}, Key: {:?}, ScanCode: {:?}, Action: {:?}, Modifiers: [{:?}]", time, key, scancode, action, mods);
-                    match (key, action) {
-                        (glfw::Key::Escape, glfw::Action::Press) => window.set_should_close(true),
+                winit::Event::Moved(x, y) => window.set_title(&format!("Window pos: ({:?}, {:?})", x, y)),
+                winit::Event::Resized(w, h) => window.set_title(&format!("Window size: ({:?}, {:?})", w, h)),
+                winit::Event::Closed => println!("Window close requested."),
+                winit::Event::DroppedFile(path_buf) => println!("PathBuf {:?}", path_buf),
+                winit::Event::ReceivedCharacter(received_char) => println!("Received Char {:?}", received_char),
+                winit::Event::Focused(focused) => println!("Window focused: {:?}.", focused),
+                winit::Event::KeyboardInput(element_state, scancode, virtual_key_code) => {
+                    println!("Element State: {:?}, ScanCode: {:?}, Virtual Key Code: {:?}",
+                        element_state, scancode, virtual_key_code);
+                    /*match (key, action) {
+                        (glfw::Key::Escape, glfw::Action::Press) => window.window().set_should_close(true),
                         (glfw::Key::R, glfw::Action::Press) => {
                             // Resize should cause the window to "refresh"
                             let (window_width, window_height) = window.get_size();
@@ -80,8 +72,18 @@ impl Input {
                             }
                         },
                         _ => {}
-                    }
-                }
+                    }*/
+                },
+                a @ winit::Event::MouseMoved(_) => {
+                    println!("{:?}", a);
+                },
+                winit::Event::MouseWheel(mouse_scroll_delta, touch_phase) => println!("Mouse Scroll Delta {:?}, Touch Phase {:?}", mouse_scroll_delta, touch_phase),
+                winit::Event::MouseInput(element_state, mouse_button) => println!("Element State {:?}, Mouse Button {:?}", element_state, mouse_button),
+                winit::Event::TouchpadPressure(f, i) => println!("F {:?}, I {:?}", f, i),
+                winit::Event::Awakened => println!("Awakened"),
+                winit::Event::Refresh => println!("Window refresh callback triggered."),
+                winit::Event::Suspended(is_suspended) => println!("Is suspended {:?}", is_suspended),
+                winit::Event::Touch(touch) => println!("Touch {:?}", touch)
             }
         }
 }
@@ -101,8 +103,8 @@ impl KeyboardEvent {
 }
 
 pub trait InputProcessor {
-    fn key_down(&self, keycode: glfw::Key) -> bool;
-	fn key_up(&self, keycode: glfw::Key) -> bool;
+    fn key_down(&self, keycode: winit::VirtualKeyCode) -> bool;
+	fn key_up(&self, keycode: winit::VirtualKeyCode) -> bool;
 	/*fn key_typed(&self, character: char) -> bool;
 	fn touch_down(&self, screenX: i32, screenY: i32, pointer: i32, button: i32) -> bool;
 	fn touch_up(&self, screenX: i32, screenY: i32, pointer: i32, button: i32) -> bool;
