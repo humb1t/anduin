@@ -6,34 +6,33 @@
 use logic::{Application, ApplicationListener};
 use time;
 use std::thread;
-use std::time::Duration;
 
 pub struct GameLoop {
     pub max_skipped_frames: u16,
-    pub max_time_dif: i64
+    pub max_time_dif: time::Duration
 }
 
 impl GameLoop {
         pub fn new() -> Self {
             GameLoop {
                 max_skipped_frames: 5,
-                max_time_dif: 1
+                max_time_dif: time::Duration::milliseconds(100)
             }
         }
 
         pub fn run(&self, app: &mut Application) {
-            let mut next_time = time::get_time().sec;
+            let mut next_time = time::now();
             let mut skipped_frames = 1;
             while !app.graphics.should_close {
                 app.process_input();
-                let curr_time = time::get_time().sec;
-                println!("curr_time = {}", curr_time);
-                println!("next_time = {}", next_time);
+                let curr_time = time::now();
+                println!("curr_time = {:?}", curr_time);
+                println!("next_time = {:?}", next_time);
                 if (curr_time - next_time) > self.max_time_dif {
                      next_time = curr_time;
                  }
                 if curr_time >= next_time {
-                    next_time += app.graphics.delta_time;
+                    next_time = next_time + app.graphics.delta_time;
                     app.update();
                     if (curr_time < next_time) || (skipped_frames > self.max_skipped_frames) {
                          app.render();
@@ -44,8 +43,11 @@ impl GameLoop {
                 } else {
                     let time_to_sleep = next_time - curr_time;
                     println!("time_to_sleep = {}", time_to_sleep);
-                    if time_to_sleep > 0 {
-                         thread::sleep(Duration::from_secs(time_to_sleep as u64));
+                    if !time_to_sleep.is_zero() {
+                        match time_to_sleep.to_std() {
+                            Ok(duration) => thread::sleep(duration),
+                            Err(err) => println!("Error {:?}", err)
+                        }
                      }
                 }
             }

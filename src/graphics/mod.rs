@@ -7,6 +7,7 @@ extern crate vulkano_win;
 
 use self::vulkano::instance::Instance;
 use self::vulkano_win::VkSurfaceBuild;
+use time;
 
 pub struct DisplayMode {
     pub width: u32,
@@ -26,7 +27,7 @@ pub struct Graphics {
     pub graphics_type: String,//make enum
     pub display_mode: DisplayMode,
     pub frame_id: u32,
-    pub delta_time: i64,
+    pub delta_time: time::Duration,
     pub fps: u16,
     pub window: vulkano_win::Window,
     pub monitors: Vec<Monitor>,
@@ -45,13 +46,14 @@ impl Graphics {
         let physical = vulkano::instance::PhysicalDevice::enumerate(&instance)
                             .next().expect("no device available");
         println!("Using device: {} (type: {:?})", physical.name(), physical.ty());
-        let window = winit::WindowBuilder::new().build_vk_surface(&instance).unwrap();
+        let window = winit::WindowBuilder::new().with_title(title.to_string())
+            .with_dimensions(width, height).build_vk_surface(&instance).unwrap();
 
         Graphics {
             graphics_type: "vulkano".to_string(),
             display_mode: DisplayMode {width: width, height: height, refresh_rate: 1, bits_per_pixel: 1},
             frame_id: 0,
-            delta_time: 2,
+            delta_time: time::Duration::seconds(1),
             fps: 0,
             monitors: vec![],
             window: window,

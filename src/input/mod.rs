@@ -1,8 +1,9 @@
-use graphics::Graphics;
-use std::collections::HashMap;
-
 extern crate winit;
 extern crate vulkano_win;
+
+use graphics::Graphics;
+use std::collections::HashMap;
+use std::process;
 
 #[allow(dead_code)]
 enum Peripheral {
@@ -44,35 +45,39 @@ impl Input {
             match event {
                 winit::Event::Moved(x, y) => window.set_title(&format!("Window pos: ({:?}, {:?})", x, y)),
                 winit::Event::Resized(w, h) => window.set_title(&format!("Window size: ({:?}, {:?})", w, h)),
-                winit::Event::Closed => println!("Window close requested."),
+                winit::Event::Closed => {
+                    println!("Window close requested.");
+                    process::exit(0);
+                },
                 winit::Event::DroppedFile(path_buf) => println!("PathBuf {:?}", path_buf),
                 winit::Event::ReceivedCharacter(received_char) => println!("Received Char {:?}", received_char),
                 winit::Event::Focused(focused) => println!("Window focused: {:?}.", focused),
                 winit::Event::KeyboardInput(element_state, scancode, virtual_key_code) => {
                     println!("Element State: {:?}, ScanCode: {:?}, Virtual Key Code: {:?}",
                         element_state, scancode, virtual_key_code);
-                    /*match (key, action) {
-                        (glfw::Key::Escape, glfw::Action::Press) => window.window().set_should_close(true),
-                        (glfw::Key::R, glfw::Action::Press) => {
+                    match (virtual_key_code, element_state) {
+                        (Some(winit::VirtualKeyCode::Escape), _) => process::exit(0),
+                        (Some(winit::VirtualKeyCode::R), _) => {
                             // Resize should cause the window to "refresh"
-                            let (window_width, window_height) = window.get_size();
-                            window.set_size(window_width + 1, window_height);
-                            window.set_size(window_width, window_height);
+                            match window.get_inner_size() {
+                                Some(size) => window.set_inner_size(size.0, size.1),
+                                None => ()
+                            }
                         },
-                        (_, glfw::Action::Press) => {
+                        (Some(key), winit::ElementState::Pressed) => {
                             &self.keys_states.insert(key, true);
                             for processor in &self.input_processors {
                                 processor.key_down(key);
                             }
                         },
-                        (_, glfw::Action::Release) => {
+                        (Some(key), winit::ElementState::Released) => {
                             &self.keys_states.insert(key, false);
                             for processor in &self.input_processors {
                                 processor.key_up(key);
                             }
                         },
                         _ => {}
-                    }*/
+                    }
                 },
                 a @ winit::Event::MouseMoved(_) => {
                     println!("{:?}", a);
