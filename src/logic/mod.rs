@@ -1,4 +1,3 @@
-mod scene;
 mod rules;
 pub mod lcm;
 mod physic;
@@ -46,4 +45,8 @@ pub trait ApplicationListener {
     fn pause(&self);
     fn resume(&self);
     fn dispose(&self);
+}
+
+pub trait Actable {
+    fn update(&self);
 }

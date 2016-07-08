@@ -7,6 +7,7 @@ use logic::{Application, ApplicationListener};
 use time;
 use std::thread;
 
+#[derive(Debug)]
 pub struct GameLoop {
     pub max_skipped_frames: u16,
     pub max_time_dif: time::Duration

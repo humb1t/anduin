@@ -36,6 +36,6 @@ nalgebra = "0.8"
 ncollide = "0.9.1"
 gl = "*"
 libc = "*"
-vulkano = {git = "https://github.com/tomaka/vulkano.git"}
-vulkano-win = {git = "https://github.com/tomaka/vulkano.git"}
+vulkano = "0.1.0"#{git = "https://github.com/tomaka/vulkano.git"}
+vulkano-win = "0.1.0"#{git = "https://github.com/tomaka/vulkano.git"}
 winit = "0.5"

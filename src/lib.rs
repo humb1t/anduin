@@ -3,7 +3,7 @@ extern crate winit;
 
 mod audio;
 mod files;
-mod graphics;
+pub mod graphics;
 pub mod input;
 pub mod logic;
 mod net;
@@ -11,7 +11,6 @@ mod utils;
 pub mod core;
 
 use logic::{ApplicationListener, Application};
-use logic::lcm::GameLoop;
 
 /**
 * Test Game Example
@@ -65,7 +64,7 @@ pub fn logger(text: &str)
     println!("LOG: {}", text);
 }
 
-fn main() {
+/*fn main() {
     logger("start main");
     let mut application = Application::new("Anduin", "desktop");
     logger("application created");
@@ -77,4 +76,4 @@ fn main() {
     logger("game_loop runned");
     application.exit();
     logger("exited");
-}
+}*/

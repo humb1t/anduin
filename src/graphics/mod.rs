@@ -9,6 +9,10 @@ use self::vulkano::instance::Instance;
 use self::vulkano_win::VkSurfaceBuild;
 use time;
 
+pub trait Drawable {
+    fn draw(&self);
+}
+
 pub struct DisplayMode {
     pub width: u32,
     pub height: u32,
@@ -61,3 +65,19 @@ impl Graphics {
         }
     }
 }
+
+#[derive(Debug)]
+pub struct Geometry {
+    mesh: Mesh
+}
+
+#[derive(Debug)]
+pub struct Mesh {
+    // verticies: ,
+    // edges: ,
+    // polygons:
+}
+
+// enum VertexDataType {
+// 		VertexArray, VertexBufferObject, VertexBufferObjectSubData, VertexBufferObjectWithVAO
+// }
