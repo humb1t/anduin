@@ -9,6 +9,16 @@ pub struct Stage<'a> {
     pub root: Node<'a>
 }
 
+impl<'a> Stage<'a> {
+    pub fn update(&self) {
+        &self.root.update();
+    }
+
+    pub fn process_input(&self, inputs: Vec<input::InputEvent>){
+        &self.root.process_input(inputs);
+    }
+}
+
 pub struct Node<'a> {
     name: &'static str,
     parent: PhantomData<&'a Node<'a>>,
@@ -20,7 +30,6 @@ pub struct Node<'a> {
 }
 
 impl<'a> Node<'a> {
-
     pub fn build<A, I, D>(name: &'static str, actor: A, input_processor: I, renderer: D) -> Self
         where A: 'a + logic::Actable, I: 'a + input::InputProcessor, D: 'a + graphics::Drawable {
         Node {
@@ -32,7 +41,6 @@ impl<'a> Node<'a> {
             renderer:  Some(Box::new(renderer))
         }
     }
-
     pub fn new(name: &'static str) -> Self {
         Node {
             name: name,
@@ -43,9 +51,39 @@ impl<'a> Node<'a> {
             renderer: None
         }
     }
-
     pub fn add_child(&mut self, child: Node<'a>) {
         self.children.push(child);
+    }
+    pub fn update(&self) {
+        match *&self.actor {
+            Some(ref actor) => actor.update(),
+            None => ()
+        }
+        for child in &self.children {
+            child.update();
+        }
+    }
+    pub fn process_input(&self, events: Vec<input::InputEvent>) {
+        match *&self.input_processor {
+            Some(ref processor) => {
+                for keyboard_event in events.clone() {
+                    processor.process(keyboard_event)
+                }
+            },
+            None => ()
+        }
+        for child in &self.children {
+            child.process_input(events.clone());
+        }
+    }
+    pub fn draw(&self) {
+        match *&self.renderer {
+            Some(ref renderer) => renderer.draw(),
+            None => ()
+        }
+        for child in &self.children {
+            child.draw();
+        }
     }
 }
 

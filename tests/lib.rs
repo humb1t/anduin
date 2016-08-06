@@ -3,7 +3,7 @@ extern crate winit;//TODO: no 3rd party crates in tests
 
 use anduin::logic::{Actable, lcm};
 use anduin::core;
-use anduin::input::InputProcessor;
+use anduin::input::{InputProcessor, Key};
 use anduin::graphics::Drawable;
 
 #[test]
@@ -23,6 +23,7 @@ fn create_simple_game()
     let scene = core::scene::Stage {
         root: core::scene::Node::build("Root Node", Actor{}, Control{}, Image{})
     };
+    scene.update();
 }
 
 struct Actor {
@@ -49,15 +50,13 @@ impl Drawable for Image {
 }
 
 impl InputProcessor for Control {
-        fn key_down(&self, keycode: winit::VirtualKeyCode) -> bool
+        fn key_down(&self, key: Key)
         {
-            println!("Keypushed down");
-            false
+            println!("Keypushed down: {:?}", key)
         }
-    	fn key_up(&self, keycode: winit::VirtualKeyCode) -> bool
+    	fn key_up(&self, key: Key)
         {
-            println!("Keypushed up");
-            false
+            println!("Keypushed up: {:?}", key)
         }
 }
 

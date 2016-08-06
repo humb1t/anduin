@@ -11,6 +11,7 @@ mod utils;
 pub mod core;
 
 use logic::{ApplicationListener, Application};
+use input::{InputEvent, Key, InputType};
 
 /**
 * Test Game Example
@@ -47,15 +48,21 @@ impl ApplicationListener for Application {
 pub struct InputProcessorStuct;
 
 impl input::InputProcessor for InputProcessorStuct{
-    fn key_down(&self, keycode: winit::VirtualKeyCode) -> bool
-    {
-        println!("Key down {:?}", keycode);
-        false
+
+    fn process(&self, keyboard_event: InputEvent){
+        match keyboard_event.event_type {
+            InputType::KeyDown => self.key_down(keyboard_event.key),
+            InputType::KeyUp => self.key_up(keyboard_event.key)
+        }
     }
-	fn key_up(&self, keycode: winit::VirtualKeyCode) -> bool
+
+    fn key_down(&self, key: Key)
     {
-        println!("Key up {:?}", keycode);
-        false
+        println!("Key down {:?}", key)
+    }
+	fn key_up(&self, key: Key)
+    {
+        println!("Key up {:?}", key)
     }
 }
 
