@@ -1,5 +1,7 @@
 extern crate time;
 extern crate winit;
+#[macro_use]
+extern crate vulkano;
 
 mod audio;
 mod files;
@@ -70,17 +72,3 @@ pub fn logger(text: &str)
 {
     println!("LOG: {}", text);
 }
-
-/*fn main() {
-    logger("start main");
-    let mut application = Application::new("Anduin", "desktop");
-    logger("application created");
-    let game_loop = GameLoop::new();
-    logger("game_loop created");
-    application.input.add_input_processor(Box::new(InputProcessorStuct{}));
-    logger("add_input_processor finished");
-    game_loop.run(&mut application);
-    logger("game_loop runned");
-    application.exit();
-    logger("exited");
-}*/

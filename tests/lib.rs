@@ -1,10 +1,23 @@
 extern crate anduin;
 extern crate winit;//TODO: no 3rd party crates in tests
 
-use anduin::logic::{Actable, lcm};
+use anduin::logic::{Actable, lcm, Application};
 use anduin::core;
 use anduin::input::{InputProcessor, Key};
 use anduin::graphics::Drawable;
+
+#[test]
+fn create_test_app() {
+    let mut application = Application::new("Anduin", "desktop");
+    println!("application created");
+    let game_loop = lcm::GameLoop::new();
+    println!("game_loop created");
+    application.input.add_input_processor(Box::new(anduin::InputProcessorStuct{}));
+    println!("add_input_processor finished");
+    game_loop.run(&mut application);
+    println!("game_loop runned");
+    application.exit();
+}
 
 #[test]
 fn create_game_loop() {

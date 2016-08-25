@@ -28,14 +28,21 @@ keywords = ["game-engine", "vulkan", "game", "engine"]
 # separated with a `/`.
 license = "AGPL-3.0"
 
+#prepare shaders TODO: try to move it out
+build = "build.rs"
+
 [dependencies]
 time = "0.1"
-nphysics2d = "0.1.*"
-nphysics3d = "0.1.*"
-nalgebra = "0.8"
-ncollide = "0.9.1"
+#nphysics2d = "0.1.*"
+#nphysics3d = "0.1.*"
+#nalgebra = "0.8"
+#ncollide = "0.9.1"
 gl = "*"
 libc = "*"
-vulkano = "0.1.0"#{git = "https://github.com/tomaka/vulkano.git"}
-vulkano-win = "0.1.0"#{git = "https://github.com/tomaka/vulkano.git"}
+vulkano = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
+vulkano-win = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
 winit = "0.5"
+
+[build-dependencies]
+vk-sys = "0.1.1"
+vulkano-shaders = "0.2.0"
