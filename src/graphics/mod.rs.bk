@@ -1,14 +1,21 @@
+mod g2d;
+mod g3d;
+
 extern crate vulkano;
+extern crate winit;
 extern crate vulkano_win;
 
-use std::sync::Arc;
+use vulkano::buffer::BufferUsage;
+use vulkano::buffer::CpuAccessibleBuffer;
 use vulkano::command_buffer;
 use vulkano::command_buffer::DynamicState;
 use vulkano::command_buffer::PrimaryCommandBufferBuilder;
 use vulkano::command_buffer::Submission;
 use vulkano::descriptor::pipeline_layout::EmptyPipeline;
+use vulkano::device::Device;
 use vulkano::framebuffer::Framebuffer;
 use vulkano::framebuffer::Subpass;
+use vulkano::instance::Instance;
 use vulkano::pipeline::GraphicsPipeline;
 use vulkano::pipeline::GraphicsPipelineParams;
 use vulkano::pipeline::blend::Blend;
@@ -19,50 +26,92 @@ use vulkano::pipeline::vertex::SingleBufferDefinition;
 use vulkano::pipeline::viewport::ViewportsState;
 use vulkano::pipeline::viewport::Viewport;
 use vulkano::pipeline::viewport::Scissor;
+use vulkano::swapchain::SurfaceTransform;
+use vulkano::swapchain::Swapchain;
+use self::vulkano_win::VkSurfaceBuild;
+use time;
 use std::time::Duration;
 
-pub struct Graphics3d {
+use std::sync::Arc;
 
+pub trait Drawable {
+    fn draw(&self);
 }
 
-impl Graphics3d {
-    pub fn init(physical: &vulkano::instance::PhysicalDevice,
-        window: &vulkano_win::Window,
-        width: u32, height: u32) -> Self{
+pub struct DisplayMode {
+    pub width: u32,
+    pub height: u32,
+    pub refresh_rate: u16,
+    pub bits_per_pixel: u16
+}
 
-    let queue = physical.queue_families().find(|q| {
-        // We take the first queue that supports drawing to our window.
-        q.supports_graphics() && window.surface().is_supported(q).unwrap_or(false)
-    }).expect("couldn't find a graphical queue family");
+pub struct Monitor {
+    pub virtual_y: u32,
+    pub virtual_x: u32,
+    pub name: String,
+    pub display_modes: Vec<DisplayMode>
+}
 
-    let (device, mut queues) = {
-        let device_ext = vulkano::device::DeviceExtensions {
-            khr_swapchain: true,
-            .. vulkano::device::DeviceExtensions::none()
+pub struct Graphics {
+    pub graphics_type: String,//make enum
+    pub display_mode: DisplayMode,
+    pub frame_id: u32,
+    pub delta_time: time::Duration,
+    pub fps: u16,
+    pub window: vulkano_win::Window,
+    pub monitors: Vec<Monitor>,
+    pub should_close: bool
+}
+
+impl Graphics {
+    pub fn new(width: u32, height: u32, title: &str) -> Self {
+        println!("graphic new start");
+        let instance = {
+            let extensions = vulkano_win::required_extensions();
+            println!("extensions: {:?}", extensions);
+            Instance::new(None, &extensions, None).expect("failed to create Vulkan instance")
+        };
+        println!("instance created");
+        let physical = vulkano::instance::PhysicalDevice::enumerate(&instance)
+                            .next().expect("no device available");
+        println!("Using device: {} (type: {:?})", physical.name(), physical.ty());
+        let window = winit::WindowBuilder::new().with_title(title.to_string())
+            .with_dimensions(width, height).build_vk_surface(&instance).unwrap();
+
+        let queue = physical.queue_families().find(|q| {
+            // We take the first queue that supports drawing to our window.
+            q.supports_graphics() && window.surface().is_supported(q).unwrap_or(false)
+        }).expect("couldn't find a graphical queue family");
+
+        let (device, mut queues) = {
+            let device_ext = vulkano::device::DeviceExtensions {
+                khr_swapchain: true,
+                .. vulkano::device::DeviceExtensions::none()
+            };
+
+            vulkano::device::Device::new(
+                &physical,
+                 physical.supported_features(),
+                  &device_ext,
+                  [(queue, 0.5)].iter().cloned()
+              ).expect("failed to create device")
         };
 
-        vulkano::device::Device::new(
-            &physical,
-             physical.supported_features(),
-              &device_ext,
-              [(queue, 0.5)].iter().cloned()
-          ).expect("failed to create device")
-    };
+        let queue = queues.next().unwrap();
 
-    let queue = queues.next().unwrap();
+        let (swapchain, images) = {
+            let caps = window.surface().get_capabilities(&physical)
+                             .expect("failed to get surface capabilities");
+            let dimensions = caps.current_extent.unwrap_or([width, height]);
+            let present = caps.present_modes.iter().next().unwrap();
+            let alpha = caps.supported_composite_alpha.iter().next().unwrap();
+            let format = caps.supported_formats[0].0;
+            vulkano::swapchain::Swapchain::new(&device, &window.surface(), 2, format, dimensions, 1,
+                           &caps.supported_usage_flags, &queue,
+                           vulkano::swapchain::SurfaceTransform::Identity, alpha,
+                           present, true, None).expect("failed to create swapchain")
+        };
 
-    let (swapchain, images) = {
-        let caps = window.surface().get_capabilities(&physical)
-                         .expect("failed to get surface capabilities");
-        let dimensions = caps.current_extent.unwrap_or([width, height]);
-        let present = caps.present_modes.iter().next().unwrap();
-        let alpha = caps.supported_composite_alpha.iter().next().unwrap();
-        let format = caps.supported_formats[0].0;
-        vulkano::swapchain::Swapchain::new(&device, &window.surface(), 2, format, dimensions, 1,
-                       &caps.supported_usage_flags, &queue,
-                       vulkano::swapchain::SurfaceTransform::Identity, alpha,
-                       present, true, None).expect("failed to create swapchain")
-    };
         let vertex_buffer = {
             #[derive(Debug, Clone)]
             struct Vertex { position: [f32; 2] }
@@ -129,6 +178,8 @@ impl Graphics3d {
         }).collect::<Vec<_>>();
 
         let mut submissions: Vec<Arc<Submission>> = Vec::new();
+
+    loop {
         submissions.retain(|s| s.destroying_would_block());
         let image_num = swapchain.acquire_next_image(Duration::new(1, 0)).unwrap();
         let command_buffer = PrimaryCommandBufferBuilder::new(&device, queue.family())
@@ -140,7 +191,39 @@ impl Graphics3d {
             .build();
         submissions.push(command_buffer::submit(&command_buffer, &queue).unwrap());
         swapchain.present(&queue, image_num).unwrap();
+        for ev in window.window().poll_events() {
+            match ev {
+                winit::Event::Closed => break,
+                _ => ()
+            }
+        }
+    }
 
-        Graphics3d {}
+        Graphics {
+            graphics_type: "vulkano".to_string(),
+            display_mode: DisplayMode {width: width, height: height, refresh_rate: 1, bits_per_pixel: 1},
+            frame_id: 0,
+            delta_time: time::Duration::seconds(1),
+            fps: 0,
+            monitors: vec![],
+            window: window,
+            should_close: false
+        }
     }
 }
+
+#[derive(Debug)]
+pub struct Geometry {
+    mesh: Mesh
+}
+
+#[derive(Debug)]
+pub struct Mesh {
+    // verticies: ,
+    // edges: ,
+    // polygons:
+}
+
+// enum VertexDataType {
+// 		VertexArray, VertexBufferObject, VertexBufferObjectSubData, VertexBufferObjectWithVAO
+// }

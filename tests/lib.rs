@@ -8,7 +8,7 @@ use anduin::graphics::Drawable;
 
 #[test]
 fn create_test_app() {
-    let mut application = Application::new("Anduin", "desktop");
+    let mut application = Application::new("Anduin", "desktop", Some(5));
     println!("application created");
     let game_loop = lcm::GameLoop::new();
     println!("game_loop created");

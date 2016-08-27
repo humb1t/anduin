@@ -9,31 +9,29 @@ use input::Input;
 
 use std::process;
 
-// Central object - static bean
+//Central object - static bean
 pub struct Application {
     pub name: &'static str,
     pub platform: &'static str,
     pub graphics: Graphics,
-    pub input: Input,
-    pub lifetime: Option<u64>
+    pub input: Input
 }
 
 impl Application {
-    pub fn new(name: &'static str, platform: &'static str, lifetime: Option<u64>) -> Self {
-        Application {
-            name: name,
-            platform: platform,
-            graphics: Graphics::new(300, 300, name),
-            input: Input::new(),
-            lifetime: lifetime
-        }
+    pub fn new(name: &'static str, platform: &'static str) -> Self {
+         Application {
+             name: name,
+             platform: platform,
+             graphics: Graphics::new(300, 300, name),
+             input: Input::new()
+         }
     }
 
-    pub fn process_input(&mut self) {
+    pub fn process_input(&mut self){
         self.input.update(&mut self.graphics);
     }
 
-    pub fn exit(&self) {
+    pub fn exit(&self){
         self.dispose();
         process::exit(0);
     }
