@@ -5,8 +5,10 @@ use anduin::logic::{Actable, lcm, Application};
 use anduin::core;
 use anduin::input::{InputProcessor, Key};
 use anduin::graphics::Drawable;
+use anduin::audio::Audio;
+use std::thread::sleep;
+use std::time::Duration;
 
-#[test]
 fn create_test_app() {
     let mut application = Application::new("Anduin", "desktop", Some(5));
     println!("application created");
@@ -17,6 +19,14 @@ fn create_test_app() {
     game_loop.run(&mut application);
     println!("game_loop runned");
     application.exit();
+}
+
+#[test]
+fn play_sound() {
+    let audio = Audio::new();
+    audio.music.play("");
+    audio.sound.play("");
+    sleep(Duration::from_millis(5000));
 }
 
 #[test]

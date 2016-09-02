@@ -42,6 +42,7 @@ libc = "*"
 vulkano = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
 vulkano-win = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
 winit = "0.5"
+ears = "*"
 
 [build-dependencies]
 vk-sys = "0.1.1"

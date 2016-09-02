@@ -3,13 +3,13 @@ extern crate winit;
 #[macro_use]
 extern crate vulkano;
 
-mod audio;
-mod files;
+pub mod audio;
+pub mod files;
 pub mod graphics;
 pub mod input;
 pub mod logic;
-mod net;
-mod utils;
+pub mod net;
+pub mod utils;
 pub mod core;
 
 use logic::{ApplicationListener, Application};
