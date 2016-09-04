@@ -5,7 +5,7 @@ use anduin::logic::{Actable, lcm, Application};
 use anduin::core;
 use anduin::input::{InputProcessor, Key};
 use anduin::graphics::Drawable;
-use anduin::audio::Audio;
+use anduin::audio::{music, sound, PlaybackController};
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -23,9 +23,10 @@ fn create_test_app() {
 
 #[test]
 fn play_sound() {
-    let audio = Audio::new();
-    audio.music.play("");
-    audio.sound.play("");
+    let music = music::Music::new("resources/music.ogg");
+    let sound = sound::Sound::new("resources/shot.wav");
+    music.play();
+    sound.play();
     sleep(Duration::from_millis(5000));
 }
 
