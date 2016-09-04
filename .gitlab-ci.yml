@@ -3,4 +3,5 @@ image: iceyec/ci-rust
 build:
   script:
     - curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- -y --disable-sudo
+    - sudo apt install libopenal-dev libsndfile1-dev
     - cargo build --release --verbose
