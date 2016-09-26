@@ -63,13 +63,13 @@ struct Control {
 
 impl Actable for Actor {
     fn update(&self) {
-        println!("Update self");
+        println!("Updating self");
     }
 }
 
 impl Drawable for Image {
     fn draw(&self) {
-        println!("Draw self");
+        println!("Drawing self");
     }
 }
 
