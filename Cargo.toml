@@ -1,13 +1,14 @@
 [package]
 name = "anduin"
-version = "0.0.3"
+version = "0.0.2"
 authors = ["Nikita <humb1t@yandex.ru>"]
 exclude = [
-    "target/*"
+    "target/*",
+    "resources/*"
 ]
 # A short blurb about the package. This is not rendered in any format when
 # uploaded to crates.io (aka this is not markdown).
-description = "This is my first project on rust and my first attemp to create own game engine. It's aim - build fast, safe, usefriendly game-engine based on new technologies/languages such as rust and vulkan api."
+description = "Complex end to end game engine with usage of new technologies like vulkan api (vulkano), and basic principles: 1) Speed; 2) Memory Safety; 3) Cross-platform; 4) User Friendly"
 
 # These URLs point to more information about the repository.
 documentation = "https://gitlab.com/humb1t/anduin"
@@ -37,12 +38,12 @@ time = "0.1"
 #nphysics3d = "0.1.*"
 #nalgebra = "0.8"
 #ncollide = "0.9.1"
-gl = "*"
-libc = "*"
+gl = "0.6"
+libc = "0.2"
 vulkano = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
 vulkano-win = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
 winit = "0.5"
-ears = "*"
+ears = "0.3"
 
 [build-dependencies]
 vk-sys = "0.1.1"
