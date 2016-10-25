@@ -1,7 +1,4 @@
 extern crate time;
-extern crate winit;
-#[macro_use]
-extern crate vulkano;
 
 pub mod audio;
 pub mod files;
