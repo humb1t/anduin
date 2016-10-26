@@ -40,6 +40,12 @@ pub struct EventQueue<T: Event> {
 }
 
 impl<T: Event> EventQueue<T> {
+    pub fn init() -> Self {
+        EventQueue {
+            event_queue: VecDeque::new()
+        }
+    }
+
     pub fn update(&mut self) {
         let drain_size = cmp::min(self.event_queue.len(), 4);//replace with threads quantity
         for current_event in self.event_queue.drain(0..drain_size) {

@@ -50,6 +50,127 @@ fn create_simple_game()
     scene.update();
 }
 
+/*fn test_input()
+{
+    match event {
+        winit::Event::Moved(x, y) => {
+            window.set_title(&format!("Window pos: ({:?}, {:?})", x, y))
+        }
+        winit::Event::Resized(w, h) => {
+            window.set_title(&format!("Window size: ({:?}, {:?})", w, h))
+        }
+        winit::Event::Closed => {
+            println!("Window close requested.");
+            process::exit(0);
+        }
+        winit::Event::DroppedFile(path_buf) => println!("PathBuf {:?}", path_buf),
+        winit::Event::ReceivedCharacter(received_char) => {
+            println!("Received Char {:?}", received_char)
+        }
+        winit::Event::Focused(focused) => println!("Window focused: {:?}.", focused),
+        winit::Event::KeyboardInput(element_state, scancode, virtual_key_code) => {
+            println!("Element State: {:?}, ScanCode: {:?}, Virtual Key Code: {:?}",
+                     element_state,
+                     scancode,
+                     virtual_key_code);
+            match (virtual_key_code, element_state) {
+                (Some(winit::VirtualKeyCode::Escape), _) => process::exit(0),
+                (Some(winit::VirtualKeyCode::R), _) => {
+                    // Resize should cause the window to "refresh"
+                    match window.get_inner_size() {
+                        Some(size) => window.set_inner_size(size.0, size.1),
+                        None => (),
+                    }
+                }
+                (Some(key), winit::ElementState::Pressed) => {
+                    &self.keys_states.insert(key, true);
+                    for processor in &self.input_processors {
+                        processor.key_down(key.translate());
+                    }
+                }
+                (Some(key), winit::ElementState::Released) => {
+                    &self.keys_states.insert(key, false);
+                    for processor in &self.input_processors {
+                        processor.key_up(key.translate());
+                    }
+                }
+                _ => {}
+            }
+        }
+        a @ winit::Event::MouseMoved(_) => {
+            println!("{:?}", a);
+        }
+        winit::Event::MouseWheel(mouse_scroll_delta, touch_phase) => {
+            println!("Mouse Scroll Delta {:?}, Touch Phase {:?}",
+                     mouse_scroll_delta,
+                     touch_phase)
+        }
+        winit::Event::MouseInput(element_state, mouse_button) => {
+            println!("Element State {:?}, Mouse Button {:?}",
+                     element_state,
+                     mouse_button)
+        }
+        winit::Event::TouchpadPressure(f, i) => println!("F {:?}, I {:?}", f, i),
+        winit::Event::Awakened => println!("Awakened"),
+        winit::Event::Refresh => println!("Window refresh callback triggered."),
+        winit::Event::Suspended(is_suspended) => println!("Is suspended {:?}", is_suspended),
+        winit::Event::Touch(touch) => println!("Touch {:?}", touch),
+    }
+}
+
+
+/**
+* Test Game Example
+*/
+impl ApplicationListener for Application {
+    fn init(&self) {
+        println!("init");
+    }
+    fn update(&mut self) {
+        println!("update");
+        // Input
+        // Logic
+        // Physics
+    }
+    fn resize(&self, width: i32, height: i32) {
+        println!("Resize to {}x{}", width, height);
+    }
+    fn render(&self) {
+        println!("render");
+        // Animation
+        // Render
+    }
+    fn pause(&self) {
+        println!("pause");
+    }
+    fn resume(&self) {
+        println!("resume");
+    }
+    fn dispose(&self) {
+        println!("dispose");
+    }
+}
+
+
+pub struct InputProcessorStuct;
+
+impl input::InputProcessor for InputProcessorStuct {
+    fn process(&self, keyboard_event: InputEvent) {
+        match keyboard_event.event_type {
+            InputType::KeyDown => self.key_down(keyboard_event.key),
+            InputType::KeyUp => self.key_up(keyboard_event.key),
+        }
+    }
+
+    fn key_down(&self, key: Key) {
+        println!("Key down {:?}", key)
+    }
+    fn key_up(&self, key: Key) {
+        println!("Key up {:?}", key)
+    }
+}
+*/
+
 struct Actor {
 
 }

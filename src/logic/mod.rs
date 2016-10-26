@@ -12,6 +12,7 @@ use std::process;
 // Central object - static bean
 pub struct Application {
     pub name: &'static str,
+    pub listener: Box<ApplicationListener>,
     pub platform: &'static str,
     pub graphics: Graphics,
     pub input: Input,
@@ -19,21 +20,8 @@ pub struct Application {
 }
 
 impl Application {
-    pub fn new(name: &'static str, platform: &'static str, lifetime: Option<u64>) -> Self {
-        Application {
-            name: name,
-            platform: platform,
-            graphics: Graphics::new(300, 300, name),
-            input: Input::new(),
-            lifetime: lifetime
-        }
-    }
-
-    pub fn process_input(&mut self) {
-        self.input.update(&mut self.graphics);
-    }
-
     pub fn exit(&self) {
+        self.listener.as_mut().dispose();
         self.dispose();
         process::exit(0);
     }

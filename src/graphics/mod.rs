@@ -1,5 +1,5 @@
-mod g2d;
-mod g3d;
+pub mod g2d;
+pub mod g3d;
 
 extern crate vulkano;
 extern crate winit;
