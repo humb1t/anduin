@@ -12,19 +12,10 @@ use std::process;
 // Central object - static bean
 pub struct Application {
     pub name: &'static str,
-    pub listener: Box<ApplicationListener>,
     pub platform: &'static str,
     pub graphics: Graphics,
     pub input: Input,
     pub lifetime: Option<u64>
-}
-
-impl Application {
-    pub fn exit(&self) {
-        self.listener.as_mut().dispose();
-        self.dispose();
-        process::exit(0);
-    }
 }
 
 pub trait ApplicationListener {
@@ -35,6 +26,10 @@ pub trait ApplicationListener {
     fn pause(&self);
     fn resume(&self);
     fn dispose(&self);
+    fn exit(&self) {
+        self.dispose();
+        process::exit(0);
+    }
 }
 
 pub trait Actable {

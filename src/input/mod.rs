@@ -18,8 +18,8 @@ enum Peripheral {
 pub struct Input {
     input_processors: Vec<Box<InputProcessor>>,
     input_events_processors: HashMap<InputType, Vec<Box<InputProcessor>>>,
-    keys_states: HashMap<winit::VirtualKeyCode, bool>,
-    events_queue: VecDeque<InputEvent>,
+    keys_states: HashMap<Key, bool>,
+    pub events_queue: VecDeque<InputEvent>,
 }
 
 impl Input {
@@ -37,25 +37,33 @@ impl Input {
     }
 
     pub fn handle(&mut self) {
-        let drain_size = self.events_queue.len();
-        for event in self.event_queue.drain(0..drain_size) {
-            self.handle_input_event(self, event);
+        let queue_size = self.events_queue.len();
+        while !self.events_queue.is_empty() {
+            match self.events_queue.pop_back() {
+                Some(event) => self.handle_input_event(event),
+                None => ()
+            }
         }
     }
 
-    pub fn is_key_pressed(&self, key: winit::VirtualKeyCode) -> bool {
+    pub fn is_key_pressed(&self, key: Key) -> bool {
         match self.keys_states.get(&key) {
             Some(value) => *value,
             None => false,
         }
     }
 
-    fn handle_input_event(&mut self, event: InputEvent) {
-        for input_processor in self.input_processors {
+    fn handle_input_event(&self, event: InputEvent) {
+        for input_processor in &self.input_processors {
             input_processor.process(event);
         }
-        for input_events_processor in self.input_events_processors {
-            input_events_processor.process(event);
+        match self.input_events_processors.get(&event.event_type) {
+            Some(input_events_processors) => {
+                for input_events_processor in input_events_processors {
+                    input_events_processor.process(event);
+                }
+            },
+            None => ()
         }
     }
 }
@@ -71,6 +79,7 @@ pub trait InputProcessor {
         match input_event.event_type {
             InputType::KeyDown => self.key_down(input_event.key),
             InputType::KeyUp => self.key_up(input_event.key),
+            _ => ()
         }
     }
     fn key_down(&self, key: Key);
@@ -83,7 +92,7 @@ pub trait InputProcessor {
     // fn scrolled(&self, amount: i32) -> bool;
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum InputType {
     KeyDown,
     KeyUp,
@@ -104,7 +113,7 @@ enum Button {
     FORWARD,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Key {
     /// The '1' key over the letters.
     Key1,
