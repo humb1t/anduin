@@ -21,15 +21,16 @@ impl GameLoop {
         }
     }
 
-    pub fn run(&self, app: &mut Application, app_listener: &mut ApplicationListener){
+    pub fn run(&self, app_listener: &mut ApplicationListener){
         let mut next_time = time::now();
         let mut skipped_frames = 1;
-
-        while !app.graphics.should_close {
-            match app.lifetime {
+        let mut lifetime = app_listener.application().lifetime;
+        let mut should_close = app_listener.application().graphics.should_close;
+        while !app_listener.application().graphics.should_close && !should_close{
+            match lifetime {
                 Some(x) => {
-                    if x <= 0 {app.graphics.should_close = true}
-                    else {app.lifetime = Some(x-app.graphics.delta_time.num_seconds() as u64)}
+                    if x <= 0 {should_close = true}
+                    else {lifetime = Some(x-app_listener.application().graphics.delta_time.num_seconds() as u64)}
                 },
                 None => ()
             }
@@ -41,7 +42,7 @@ impl GameLoop {
                 next_time = curr_time;
             }
             if curr_time >= next_time {
-                next_time = next_time + app.graphics.delta_time;
+                next_time = next_time + app_listener.application().graphics.delta_time;
                 if (curr_time < next_time) || (skipped_frames > self.max_skipped_frames) {
                     app_listener.render();
                     skipped_frames = 1;

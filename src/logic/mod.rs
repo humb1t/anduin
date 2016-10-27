@@ -20,6 +20,7 @@ pub struct Application {
 
 pub trait ApplicationListener {
     fn init(&self);
+    fn application(&self)-> &Application;
     fn resize(&self, width: i32, height: i32);
     fn update(&mut self);
     fn render(&self);

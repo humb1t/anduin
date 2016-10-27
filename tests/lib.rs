@@ -2,23 +2,25 @@ extern crate anduin;
 extern crate winit;//TODO: no 3rd party crates in tests
 
 use anduin::logic::{Actable, lcm, Application};
+use anduin::backends::vulkan;
 use anduin::core;
-use anduin::input::{InputProcessor, Key};
+use anduin::input::{InputProcessor, Key, InputType, InputEvent};
 use anduin::graphics::Drawable;
 use anduin::audio::{music, sound, PlaybackController};
+use anduin::logic::ApplicationListener;
 use std::thread::sleep;
 use std::time::Duration;
 
-fn create_test_app() {
-    let mut application = Application::new("Anduin", "desktop", Some(5));
+fn create_test_vulkan_app() {
+    let mut vulkan_app = vulkan::VulkanApplication::init("Anduin", "desktop", Some(5));
     println!("application created");
     let game_loop = lcm::GameLoop::new();
     println!("game_loop created");
-    application.input.add_input_processor(Box::new(anduin::InputProcessorStuct{}));
+    vulkan_app.application.input.add_input_processor(Box::new(InputProcessorStuct{}));
     println!("add_input_processor finished");
-    game_loop.run(&mut application);
+    game_loop.run(&mut vulkan_app);
     println!("game_loop runned");
-    application.exit();
+    vulkan_app.exit();
 }
 
 #[test]
@@ -150,15 +152,17 @@ impl ApplicationListener for Application {
         println!("dispose");
     }
 }
+*/
 
 
 pub struct InputProcessorStuct;
 
-impl input::InputProcessor for InputProcessorStuct {
+impl InputProcessor for InputProcessorStuct {
     fn process(&self, keyboard_event: InputEvent) {
         match keyboard_event.event_type {
             InputType::KeyDown => self.key_down(keyboard_event.key),
             InputType::KeyUp => self.key_up(keyboard_event.key),
+            _ => (),
         }
     }
 
@@ -169,7 +173,6 @@ impl input::InputProcessor for InputProcessorStuct {
         println!("Key up {:?}", key)
     }
 }
-*/
 
 struct Actor {
 

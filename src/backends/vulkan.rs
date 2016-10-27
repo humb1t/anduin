@@ -5,7 +5,9 @@ extern crate winit;
 use logic;
 use input::{Key,InputEvent, Input, InputType};
 use graphics;
+use logic::ApplicationListener;
 use std::sync::Arc;
+use std;
 use vulkano::command_buffer;
 use vulkano::command_buffer::DynamicState;
 use vulkano::command_buffer::PrimaryCommandBufferBuilder;
@@ -27,13 +29,13 @@ use vulkano::instance::Instance;
 use self::vulkano_win::VkSurfaceBuild;
 use std::time::Duration;
 
-struct VulkanApplication {
-    application: logic::Application,
-    window: vulkano_win::Window
+pub struct VulkanApplication {
+    pub application: logic::Application,
+    pub window: vulkano_win::Window
 }
 
 impl VulkanApplication {
-    fn init(name: &'static str, title: &'static str) -> Self {
+    pub fn init(name: &'static str, title: &'static str, lifetime: Option<u64>) -> Self {
         let width = 1024;
         let height = 768;
         let instance = {
@@ -53,7 +55,7 @@ impl VulkanApplication {
                 platform: "vulkano",
                 graphics: graphics::Graphics::new(width, height, title),
                 input: Input::new(),
-                lifetime: None,
+                lifetime: lifetime,
             },
             window: window
         };
@@ -212,6 +214,11 @@ impl VulkanApplication {
 }
 
 impl logic::ApplicationListener for VulkanApplication {
+
+    fn application(&self) -> &logic::Application {
+        &self.application
+    }
+
     fn update(&mut self) {
         for event in self.window.window().poll_events() {
             let transformed_event: InputEvent = self.transform_event(&event);

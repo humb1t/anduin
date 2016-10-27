@@ -11,7 +11,4 @@ pub mod logic;
 pub mod net;
 pub mod utils;
 pub mod core;
-mod backends;
-
-use logic::{ApplicationListener, Application};
-use input::{InputEvent, Key, InputType};
+pub mod backends;
