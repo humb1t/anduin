@@ -387,6 +387,7 @@ impl InputTranslate for winit::VirtualKeyCode {
             winit::VirtualKeyCode::WebSearch => Key::WebSearch,
             winit::VirtualKeyCode::WebStop => Key::WebStop,
             winit::VirtualKeyCode::Yen => Key::Yen,
+            _ => Key::Yen
         }
     }
 }
