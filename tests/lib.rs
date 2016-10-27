@@ -11,7 +11,7 @@ use std::thread::sleep;
 use std::time::Duration;
 
 fn create_test_vulkan_app() {
-    let mut vulkan_app = vulkan::VulkanApplication::init("Anduin", "desktop", Some(5), Game{});
+    let mut vulkan_app = vulkan::VulkanApplication::init("Anduin", "desktop", Some(5), Box::new(Game{}));
     println!("application created");
     let game_loop = lcm::GameLoop::new();
     println!("game_loop created");

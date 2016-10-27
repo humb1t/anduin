@@ -34,7 +34,7 @@ pub struct VulkanApplication {
 }
 
 impl VulkanApplication {
-    pub fn init<T: 'static>(name: &'static str, title: &'static str, lifetime: Option<u64>, listener: T) -> Self where T: ApplicationListener{
+    pub fn init(name: &'static str, title: &'static str, lifetime: Option<u64>, listener: Box<ApplicationListener>) -> Self {
         let width = 1024;
         let height = 768;
         let instance = {
@@ -50,7 +50,7 @@ impl VulkanApplication {
             .with_dimensions(width, height).build_vk_surface(&instance).unwrap();
         let result = VulkanApplication {
             application: Application {
-                listener: Box::new(listener),
+                listener: listener,
                 name: name,
                 platform: "vulkano",
                 graphics: graphics::Graphics::new(width, height, title),
