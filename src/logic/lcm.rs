@@ -3,7 +3,7 @@
 // Stop: Here, any open resources should be released before exiting.
 // Update: All the game logic goes here, modifying the state of objects.
 // Draw: This is where all the drawing goes.
-use logic::{Application, ApplicationListener};
+use logic::{Application, ApplicationAdapter, ApplicationListener};
 use time;
 use std::thread;
 
@@ -21,20 +21,18 @@ impl GameLoop {
         }
     }
 
-    pub fn run(&self, app_listener: &mut ApplicationListener){
+    pub fn run(&self, application: &mut ApplicationAdapter){
         let mut next_time = time::now();
         let mut skipped_frames = 1;
-        let mut lifetime = app_listener.application().lifetime;
-        let mut should_close = app_listener.application().graphics.should_close;
-        while !app_listener.application().graphics.should_close && !should_close{
-            match lifetime {
+        while !application.get_application().graphics.should_close{
+            match application.get_application().lifetime {
                 Some(x) => {
-                    if x <= 0 {should_close = true}
-                    else {lifetime = Some(x-app_listener.application().graphics.delta_time.num_seconds() as u64)}
+                    if x <= 0 {application.get_application().graphics.should_close = true}
+                    else { application.get_application().lifetime = Some(x-application.get_application().graphics.delta_time.num_seconds() as u64)}
                 },
                 None => ()
             }
-            app_listener.update();
+            application.get_application().listener.as_mut().update();
             let curr_time = time::now();
             println!("curr_time = {:?}", curr_time);
             println!("next_time = {:?}", next_time);
@@ -42,9 +40,9 @@ impl GameLoop {
                 next_time = curr_time;
             }
             if curr_time >= next_time {
-                next_time = next_time + app_listener.application().graphics.delta_time;
+                next_time = next_time + application.get_application().graphics.delta_time;
                 if (curr_time < next_time) || (skipped_frames > self.max_skipped_frames) {
-                    app_listener.render();
+                    application.get_application().listener.render();
                     skipped_frames = 1;
                 } else {
                     skipped_frames += 1;
@@ -60,6 +58,6 @@ impl GameLoop {
                 }
             }
         }
-        app_listener.exit();
+        application.get_application().listener.exit();
     }
 }

@@ -1,5 +1,4 @@
 extern crate anduin;
-extern crate winit;//TODO: no 3rd party crates in tests
 
 use anduin::logic::{Actable, lcm, Application};
 use anduin::backends::vulkan;
@@ -12,7 +11,7 @@ use std::thread::sleep;
 use std::time::Duration;
 
 fn create_test_vulkan_app() {
-    let mut vulkan_app = vulkan::VulkanApplication::init("Anduin", "desktop", Some(5));
+    let mut vulkan_app = vulkan::VulkanApplication::init("Anduin", "desktop", Some(5), Game{});
     println!("application created");
     let game_loop = lcm::GameLoop::new();
     println!("game_loop created");
@@ -20,7 +19,7 @@ fn create_test_vulkan_app() {
     println!("add_input_processor finished");
     game_loop.run(&mut vulkan_app);
     println!("game_loop runned");
-    vulkan_app.exit();
+    vulkan_app.application.listener.as_mut().exit();
 }
 
 #[test]
@@ -118,13 +117,16 @@ fn create_simple_game()
         winit::Event::Suspended(is_suspended) => println!("Is suspended {:?}", is_suspended),
         winit::Event::Touch(touch) => println!("Touch {:?}", touch),
     }
-}
-
+}*/
 
 /**
 * Test Game Example
 */
-impl ApplicationListener for Application {
+struct Game {
+
+}
+
+impl ApplicationListener for Game {
     fn init(&self) {
         println!("init");
     }
@@ -152,7 +154,6 @@ impl ApplicationListener for Application {
         println!("dispose");
     }
 }
-*/
 
 
 pub struct InputProcessorStuct;

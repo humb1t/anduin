@@ -2,10 +2,9 @@ extern crate vulkano;
 extern crate vulkano_win;
 extern crate winit;
 
-use logic;
+use logic::{Application, ApplicationListener, ApplicationAdapter};
 use input::{Key,InputEvent, Input, InputType};
 use graphics;
-use logic::ApplicationListener;
 use std::sync::Arc;
 use std;
 use vulkano::command_buffer;
@@ -30,12 +29,12 @@ use self::vulkano_win::VkSurfaceBuild;
 use std::time::Duration;
 
 pub struct VulkanApplication {
-    pub application: logic::Application,
+    pub application: Application,
     pub window: vulkano_win::Window
 }
 
 impl VulkanApplication {
-    pub fn init(name: &'static str, title: &'static str, lifetime: Option<u64>) -> Self {
+    pub fn init<T: 'static>(name: &'static str, title: &'static str, lifetime: Option<u64>, listener: T) -> Self where T: ApplicationListener{
         let width = 1024;
         let height = 768;
         let instance = {
@@ -50,7 +49,8 @@ impl VulkanApplication {
         let window = winit::WindowBuilder::new().with_title(title.to_string())
             .with_dimensions(width, height).build_vk_surface(&instance).unwrap();
         let result = VulkanApplication {
-            application: logic::Application {
+            application: Application {
+                listener: Box::new(listener),
                 name: name,
                 platform: "vulkano",
                 graphics: graphics::Graphics::new(width, height, title),
@@ -60,6 +60,7 @@ impl VulkanApplication {
             window: window
         };
         result.init_graphic(&physical, width,  height, title);
+        result.application.listener.as_ref().init();
         result
     }
 
@@ -213,13 +214,13 @@ impl VulkanApplication {
     }
 }
 
-impl logic::ApplicationListener for VulkanApplication {
+impl ApplicationAdapter for VulkanApplication {
 
-    fn application(&self) -> &logic::Application {
-        &self.application
+    fn get_application(&mut self) -> &mut Application{
+        &mut self.application
     }
 
-    fn update(&mut self) {
+    fn process_input(&mut self) {
         for event in self.window.window().poll_events() {
             let transformed_event: InputEvent = self.transform_event(&event);
             &self.application.input.events_queue.push_back(transformed_event);
@@ -227,28 +228,8 @@ impl logic::ApplicationListener for VulkanApplication {
         &self.application.input.handle();
     }
 
-    fn init(&self) {
-        unimplemented!()
-    }
-
-    fn resize(&self, width: i32, height: i32) {
-        unimplemented!()
-    }
-
-    fn render(&self) {
-        unimplemented!()
-    }
-
-    fn pause(&self) {
-        unimplemented!()
-    }
-
-    fn resume(&self) {
-        unimplemented!()
-    }
-
-    fn dispose(&self) {
-        unimplemented!()
+    fn update(&mut self) {
+        self.application.listener.as_mut().update();
     }
 }
 
