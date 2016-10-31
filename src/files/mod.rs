@@ -4,11 +4,18 @@ use std::error::Error;
 use std::fs;
 use std::io::prelude::*;
 use std::path::PathBuf;
+use std::option::Option;
 
 pub struct Files {}
 
 impl Files {
-    fn getFileHandle(path: &'static str, fileType: FileType) -> FileHandle {unimplemented!()}
+    pub fn getFileHandle(path: &'static str, fileType: FileType) -> FileHandle {
+        let buf = PathBuf::from(path);
+        FileHandle {
+            file_path: buf,
+            fileType: fileType,
+        }
+    }
 
     fn internal(path: &'static str) -> FileHandle {unimplemented!()}
 
@@ -26,14 +33,12 @@ pub trait FileHandleResolver {
 
 pub struct FileHandle {
     file_path: PathBuf,
-    file: fs::File,
     pub fileType: FileType,
 }
-/*
 impl FileHandle {
     fn path(&self) -> String {
         let mut file_path: &str;
-        match self.file_path.as_ref().to_str() {
+        match self.file_path.to_str() {
             Some(x) => file_path = x,
             None => file_path = ""
         }
@@ -41,36 +46,41 @@ impl FileHandle {
     }
 
     /// @return the name of the file, without any parent paths.
-    fn name(&self) -> String {
-        self.file_path.as_ref().file_name().as_mut();
+    pub fn name(&self) -> String {
+        let result = self.file_path.file_name().expect("");
+        String::from(result.to_str().expect(""))
     }
 
     fn extension(&self) -> String {
-        match self.file_path.as_ref().extension() {
-            Some(x) => x,
-            None => ""
+        let result: Option<&str>;
+        match self.file_path.extension() {
+            Some(x) => result = x.to_str(),
+            None => result = None
         }
+        String::from(result.expect(""))
     }
 
-    /** @return the name of the file, without parent paths or the extension. */
+    ///** @return the name of the file, without parent paths or the extension.
     fn nameWithoutExtension(&self) -> String {
-        match self.file_path.as_ref().file_stem() {
-            Some(x) => x,
-            None => ""
+        let result: Option<&str>;
+        match self.file_path.file_stem() {
+            Some(x) => result = x.to_str(),
+            None => result = None
         }
+        String::from(result.expect(""))
     }
 
-    /** @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file. backward slashes will be
-     *         returned as forward slashes. */
+    ///* @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file. backward slashes will be
+    /// *         returned as forward slashes.
     fn path_without_extension(&self) -> String {
         let mut file_path: &str;
-        match self.file_path.as_ref().to_str() {
+        match self.file_path.to_str() {
             Some(x) => file_path = x,
             None => file_path = ""
         }
-        String::from(file_path).replace(self.name(), self.nameWithoutExtension().as_str())
+        String::from(file_path).replace(self.name().as_str(), self.nameWithoutExtension().as_str())
     }
-}*/
+}
 /*
 trait Files {
     fn getFileHandle(path: &'static str, fileType: FileType) -> FileHandle;

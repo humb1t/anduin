@@ -7,6 +7,7 @@ use anduin::input::{InputProcessor, Key, InputType, InputEvent};
 use anduin::graphics::Drawable;
 use anduin::audio::{music, sound, PlaybackController};
 use anduin::logic::ApplicationListener;
+use anduin::files;
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -20,6 +21,14 @@ fn create_test_vulkan_app() {
     game_loop.run(&mut vulkan_app);
     println!("game_loop runned");
     vulkan_app.application.listener.as_mut().exit();
+}
+
+#[test]
+fn open_file() {
+    let path = "resources/test.txt";
+    let handle: files::FileHandle = files::Files::getFileHandle(path, files::FileType::Local);
+    let name: String = handle.name();
+    println!("{}", name.as_str());
 }
 
 #[test]
