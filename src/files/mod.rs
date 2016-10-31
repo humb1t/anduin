@@ -9,8 +9,13 @@ use std::option::Option;
 pub struct Files {}
 
 impl Files {
-    pub fn getFileHandle(path: &'static str, fileType: FileType) -> FileHandle {
+    pub fn getFileHandle(path: &str, fileType: FileType) -> FileHandle {
+        //TODO: base on type use underlying functions
         let buf = PathBuf::from(path);
+        let mut f = fs::File::open(&buf).expect("");
+        let mut s = String::new();
+        f.read_to_string(&mut s);
+        println!("{}", s);
         FileHandle {
             file_path: buf,
             fileType: fileType,

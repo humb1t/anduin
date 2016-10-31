@@ -10,6 +10,9 @@ use anduin::logic::ApplicationListener;
 use anduin::files;
 use std::thread::sleep;
 use std::time::Duration;
+use std::path::PathBuf;
+use std::str::FromStr;
+use std::fs;
 
 fn create_test_vulkan_app() {
     let mut vulkan_app = vulkan::VulkanApplication::init("Anduin", "desktop", Some(5), Box::new(Game{}));
@@ -25,10 +28,19 @@ fn create_test_vulkan_app() {
 
 #[test]
 fn open_file() {
-    let path = "resources/test.txt";
+    /*for entry in fs::read_dir(".").expect("") {
+        let dir = entry.expect("");
+        println!("{:?}", dir.file_name());
+        println!("{:?}", dir.path());
+    }
+    let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    d.push("tests/resources/test.txt");
+    let path = d.to_str().expect("");*/
+    let path = "./tests/resources/test.txt";
+    println!("path {}", path);
     let handle: files::FileHandle = files::Files::getFileHandle(path, files::FileType::Local);
     let name: String = handle.name();
-    println!("{}", name.as_str());
+    println!("name {}", name.as_str());
 }
 
 #[test]
