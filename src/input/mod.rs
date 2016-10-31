@@ -68,6 +68,10 @@ impl Input {
     }
 }
 
+pub trait InputTranslate {
+    fn translate(&self) -> Key;
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct InputEvent {
     pub event_type: InputType,

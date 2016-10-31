@@ -27,9 +27,8 @@ pub trait ApplicationListener {
     fn pause(&self);
     fn resume(&self);
     fn dispose(&self);
-    fn exit(&self) {
+    fn exit(&mut self){
         self.dispose();
-        process::exit(0);
     }
 }
 
@@ -37,6 +36,11 @@ pub trait ApplicationAdapter {
     fn get_application(&mut self) -> &mut Application;
     fn process_input(&mut self);
     fn update(&mut self);
+    fn render(&mut self);
+    fn exit(&mut self) {
+        self.get_application().listener.exit();
+        process::exit(0);
+    }
 }
 
 pub trait Actable {

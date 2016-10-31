@@ -5,3 +5,4 @@
 .idea/
 anduin.iml
 target/
+Cargo.lock

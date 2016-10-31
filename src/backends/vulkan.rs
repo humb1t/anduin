@@ -3,7 +3,7 @@ extern crate vulkano_win;
 extern crate winit;
 
 use logic::{Application, ApplicationListener, ApplicationAdapter};
-use input::{Key,InputEvent, Input, InputType};
+use input::{Key,InputEvent, Input, InputType, InputTranslate};
 use graphics;
 use std::sync::Arc;
 use std;
@@ -229,7 +229,11 @@ impl ApplicationAdapter for VulkanApplication {
     }
 
     fn update(&mut self) {
+        //set delta time to graphics
         self.application.listener.as_mut().update();
+    }
+    fn render(&mut self) {
+        self.application.listener.as_mut().render();
     }
 }
 
@@ -390,8 +394,4 @@ impl InputTranslate for winit::VirtualKeyCode {
             _ => Key::Yen
         }
     }
-}
-
-pub trait InputTranslate {
-    fn translate(&self) -> Key;
 }

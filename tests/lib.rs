@@ -153,6 +153,10 @@ impl ApplicationListener for Game {
     fn dispose(&self) {
         println!("dispose");
     }
+
+    fn exit(&mut self) {
+        println!("exit");
+    }
 }
 
 
