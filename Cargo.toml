@@ -33,16 +33,35 @@ license = "AGPL-3.0"
 build = "build.rs"
 
 [dependencies]
+#utils
 time = "0.1"
+
+#math
 #nphysics2d = "0.1.*"
 #nphysics3d = "0.1.*"
 nalgebra = "0.10"
 #ncollide = "0.9.1"
+
+#graphics section ---------\
+winit = "0.5"
+
+#vulkan backend
 gl = "0.6"
 libc = "0.2"
 vulkano = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
 vulkano-win = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
-winit = "0.5"
+
+#gfx backend
+gfx="0.12"
+glutin = "0.6"
+gfx_window_glutin = "0.12"
+
+#glium backend
+glium="0.15"
+image = "0.10"
+#graphics section ---------/
+
+#sound
 ears = "0.3"
 
 [build-dependencies]

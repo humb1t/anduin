@@ -38,7 +38,7 @@ fn open_file() {
     let path = d.to_str().expect("");*/
     let path = "./tests/resources/test.txt";
     println!("path {}", path);
-    let handle: files::FileHandle = files::Files::getFileHandle(path, files::FileType::Local);
+    let handle: files::FileHandle = files::Files::getFileHandle(path, files::PathType::Local);
     let name: String = handle.name();
     println!("name {}", name.as_str());
 }

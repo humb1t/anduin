@@ -1,19 +1,20 @@
-use files::{FileType, FileHandle};
+use files::{PathType, FileHandle};
+use std::option::Option;
 
 // Make sure only one copy of asset is stored in memory
 #[allow(dead_code)]
 trait AssetsManager {
-    fn get(file_name: &'static str, file_type: FileType);
-    fn get_by_desc<T>(assetDescriptor: AssetDescriptor<T>);
-    fn getAll<T>(file_type: FileType, out: Vec<T>);
-    fn unload(file_name: &'static str);
-    fn containsAsset<T>(asset: T) -> bool;
-    fn getAssetFileName<T>(asset: T) -> String;
-    fn isLoaded(file_name: &'static str, file_type: FileType) -> bool;
-    fn getLoader<T>(file_type: FileType, file_name: &'static str) -> T where T: AssetLoader;
-    fn load<T>(file_name: &'static str, file_type: FileType, parameter: AssetLoaderParameters<T>);
+    fn get<T>(file_name: &str, file_type: Option<T>);
+    fn get_by_desc<T>(asset_descriptor: AssetDescriptor<T>);
+    fn get_all<T>(file_type: T, out: Vec<T>);
+    fn unload(file_name: &str);
+    fn contains_asset<T>(asset: T) -> bool;
+    fn get_asset_file_name<T>(asset: T) -> String;
+    fn is_loaded<T>(file_name: &str, file_type: Option<T>) -> bool;
+    fn get_loader<T>(file_name: &str, file_type: Option<PathType>) -> T where T: AssetLoader;
+    fn load<T>(file_name: &str, file_type: Option<PathType>, parameter: Option<AssetLoaderParameters<T>>);
     fn load_by_desc<T>(desc: AssetDescriptor<T>);
-    fn status();
+    fn status() -> Status;
 }
 
 struct AssetLoaderParameters<T> {
@@ -27,4 +28,8 @@ struct AssetDescriptor<T>
 
 pub trait AssetLoader {
     fn resolve(fileName: &'static str) -> FileHandle;
+}
+
+enum Status {
+    Loading, Caching, Ready, Unloading, Refreshing
 }

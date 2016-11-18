@@ -9,39 +9,63 @@ use std::option::Option;
 pub struct Files {}
 
 impl Files {
-    pub fn getFileHandle(path: &str, fileType: FileType) -> FileHandle {
-        //TODO: base on type use underlying functions
-        let buf = PathBuf::from(path);
+    pub fn getFileHandle(path: &str, path_type: PathType) -> FileHandle {
+        let mut cargo = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let buf: PathBuf = match path_type {
+            PathType::Internal => {
+                cargo.push("resources");
+                cargo.push(path);
+                cargo
+            },
+            PathType::Absolute => PathBuf::from(path),
+            PathType::Classpath => {
+                cargo.push(path);
+                cargo
+            },
+            PathType::Local => {
+                cargo.push(path);
+                cargo
+            },
+            PathType::External => PathBuf::from(path),
+        };
         let mut f = fs::File::open(&buf).expect("");
         let mut s = String::new();
         f.read_to_string(&mut s);
         println!("{}", s);
         FileHandle {
             file_path: buf,
-            fileType: fileType,
+            fileType: path_type,
         }
     }
 
-    fn internal(path: &'static str) -> FileHandle {unimplemented!()}
-
-    fn classpath(path: &'static str) -> FileHandle {unimplemented!()}
-    fn external(path: &'static str) -> FileHandle {unimplemented!()}
-    fn absolute(path: &'static str) -> FileHandle {unimplemented!()}
-    fn local(path: &'static str) -> FileHandle {
-        unimplemented!()
+    fn internal(path: &str) -> FileHandle {
+        Files::getFileHandle(path, PathType::Internal)
+    }
+    fn classpath(path: &str) -> FileHandle {
+        Files::getFileHandle(path, PathType::Classpath)
+    }
+    fn external(path: &str) -> FileHandle {
+        Files::getFileHandle(path, PathType::External)
+    }
+    fn absolute(path: &str) -> FileHandle {
+        Files::getFileHandle(path, PathType::Absolute)
+    }
+    fn local(path: &str) -> FileHandle {
+        Files::getFileHandle(path, PathType::Local)
     }
 }
 
 pub trait FileHandleResolver {
-    fn resolve(file_name: &'static str) -> FileHandle;
+    fn resolve(file_name: &str) -> FileHandle;
 }
 
 pub struct FileHandle {
     file_path: PathBuf,
-    pub fileType: FileType,
+    pub fileType: PathType,
 }
+
 impl FileHandle {
-    fn path(&self) -> String {
+    pub fn path(&self) -> String {
         let mut file_path: &str;
         match self.file_path.to_str() {
             Some(x) => file_path = x,
@@ -56,7 +80,7 @@ impl FileHandle {
         String::from(result.to_str().expect(""))
     }
 
-    fn extension(&self) -> String {
+    pub fn extension(&self) -> String {
         let result: Option<&str>;
         match self.file_path.extension() {
             Some(x) => result = x.to_str(),
@@ -66,7 +90,7 @@ impl FileHandle {
     }
 
     ///** @return the name of the file, without parent paths or the extension.
-    fn nameWithoutExtension(&self) -> String {
+    pub fn nameWithoutExtension(&self) -> String {
         let result: Option<&str>;
         match self.file_path.file_stem() {
             Some(x) => result = x.to_str(),
@@ -77,7 +101,7 @@ impl FileHandle {
 
     ///* @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file. backward slashes will be
     /// *         returned as forward slashes.
-    fn path_without_extension(&self) -> String {
+    pub fn path_without_extension(&self) -> String {
         let mut file_path: &str;
         match self.file_path.to_str() {
             Some(x) => file_path = x,
@@ -86,43 +110,8 @@ impl FileHandle {
         String::from(file_path).replace(self.name().as_str(), self.nameWithoutExtension().as_str())
     }
 }
-/*
-trait Files {
-    fn getFileHandle(path: &'static str, fileType: FileType) -> FileHandle;
 
-    /** Convenience method that returns a {@link FileType#Classpath} file handle. */
-    fn classpath(path: &'static str) -> FileHandle;
-
-    /** Convenience method that returns a {@link FileType#Internal} file handle. */
-    fn internal(path: &'static str) -> FileHandle;
-
-    /** Convenience method that returns a {@link FileType#External} file handle. */
-    fn external(path: &'static str) -> FileHandle;
-
-    /** Convenience method that returns a {@link FileType#Absolute} file handle. */
-    fn absolute(path: &'static str) -> FileHandle;
-
-    /** Convenience method that returns a {@link FileType#Local} file handle. */
-    fn local(path: &'static str) -> FileHandle;
-
-    /** Returns the external storage path directory. This is the SD card on Android and the home directory of the current user on
-     * the desktop. */
-    fn getExternalStoragePath() -> String;
-
-    /** Returns true if the external storage is ready for file IO. Eg, on Android, the SD card is not available when mounted for use
-     * with a PC. */
-    fn isExternalStorageAvailable() -> bool;
-
-    /** Returns the local storage path directory. This is the private files directory on Android and the directory of the jar on the
-     * desktop. */
-    fn getLocalStoragePath() -> String;
-
-    /** Returns true if the local storage is ready for file IO. */
-    fn isLocalStorageAvailable() -> bool;
-}
-*/
-
-pub enum FileType {
+pub enum PathType {
     /** Path relative to the root of the classpath. Classpath files are always readonly. Note that classpath files are not
      * compatible with some functionality on Android, such as {@link Audio#newSound(FileHandle)} and
      * {@link Audio#newMusic(FileHandle)}. */
