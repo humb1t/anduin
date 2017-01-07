@@ -33,14 +33,11 @@ pub trait ApplicationListener {
 }
 
 pub trait ApplicationAdapter {
-    fn get_application(&mut self) -> &mut Application;
+    fn init(&mut self);
     fn process_input(&mut self);
     fn update(&mut self);
     fn render(&mut self);
-    fn exit(&mut self) {
-        self.get_application().listener.exit();
-        process::exit(0);
-    }
+    fn exit(&mut self);
 }
 
 pub trait Actable {

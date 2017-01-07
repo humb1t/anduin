@@ -14,6 +14,9 @@ use std::path::PathBuf;
 use std::str::FromStr;
 use std::fs;
 
+mod complex_tests;
+
+#[test]
 fn create_test_vulkan_app() {
     let mut vulkan_app = vulkan::VulkanApplication::init("Anduin", "desktop", Some(5), Box::new(Game{}));
     println!("application created");
