@@ -1,10 +1,12 @@
 extern crate anduin;
 
-use anduin::logic::{Actable, lcm, Application};
+use anduin::logic;
+use anduin::logic::lcm;
 use anduin::backends::vulkan;
+use anduin::backends::ApplicationAdapter;
 use anduin::core;
 use anduin::input::{InputProcessor, Key, InputType, InputEvent};
-use anduin::graphics::Drawable;
+use anduin::graphics;
 use anduin::audio::{music, sound, PlaybackController};
 use anduin::logic::ApplicationListener;
 use anduin::files;
@@ -18,15 +20,20 @@ mod complex_tests;
 
 #[test]
 fn create_test_vulkan_app() {
-    let mut vulkan_app = vulkan::VulkanApplication::init("Anduin", "desktop", Some(5), Box::new(Game{}));
+    let mut vulkan = vulkan::VulkanBackend{
+        name: "Anduin",
+        lifetime: Some(5),
+        title: "desktop",
+    };
+    let mut vulkan_app = vulkan.init(Box::new(Game{}));
     println!("application created");
     let game_loop = lcm::GameLoop::new();
     println!("game_loop created");
-    vulkan_app.application.input.add_input_processor(Box::new(InputProcessorStuct{}));
+    vulkan_app.input.add_input_processor(Box::new(InputProcessorStuct{}));
     println!("add_input_processor finished");
     game_loop.run(&mut vulkan_app);
     println!("game_loop runned");
-    vulkan_app.application.listener.as_mut().exit();
+    vulkan_app.listener.as_mut().exit();
 }
 
 #[test]
@@ -70,7 +77,7 @@ fn create_simple_scene() {
 fn create_simple_game()
 {
     let scene = core::scene::Stage {
-        root: core::scene::Node::build("Root Node", Actor{}, Control{}, Image{})
+        root: core::scene::Node::build("Root Node", DefaultActor {}, Control{}, Image{})
     };
     scene.update();
 }
@@ -203,7 +210,7 @@ impl InputProcessor for InputProcessorStuct {
     }
 }
 
-struct Actor {
+struct DefaultActor {
 
 }
 struct Image {
@@ -214,13 +221,13 @@ struct Control {
 }
 
 
-impl Actable for Actor {
+impl logic::Actor for DefaultActor {
     fn update(&self) {
         println!("Updating self");
     }
 }
 
-impl Drawable for Image {
+impl graphics::Drawable for Image {
     fn draw(&self) {
         println!("Drawing self");
     }

@@ -27,34 +27,21 @@ pub struct Graphics {
     pub delta_time: time::Duration,
     pub fps: u16,
     pub monitors: Vec<Monitor>,
-    pub should_close: bool
+    pub should_close: bool,
+    pub is3d: bool
 }
 
 impl Graphics {
-    pub fn new(width: u32, height: u32, title: &str) -> Self {
+    pub fn new(width: u32, height: u32, title: &str, is3d: bool) -> Self {
         Graphics {
             display_mode: DisplayMode {width: width, height: height, refresh_rate: 1, bits_per_pixel: 1},
             frame_id: 0,
             delta_time: time::Duration::seconds(1),
             fps: 0,
             monitors: vec![],
-            should_close: false
+            should_close: false,
+            is3d: is3d
         }
     }
 }
 
-#[derive(Debug)]
-pub struct Geometry {
-    mesh: Mesh
-}
-
-#[derive(Debug)]
-pub struct Mesh {
-    // verticies: ,
-    // edges: ,
-    // polygons:
-}
-
-// enum VertexDataType {
-// 		VertexArray, VertexBufferObject, VertexBufferObjectSubData, VertexBufferObjectWithVAO
-// }

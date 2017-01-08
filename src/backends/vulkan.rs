@@ -2,8 +2,10 @@ extern crate vulkano;
 extern crate vulkano_win;
 extern crate winit;
 
-use logic::{Application, ApplicationListener, ApplicationAdapter};
-use input::{Key,InputEvent, Input, InputType, InputTranslate};
+use backends;
+use core;
+use logic;
+use input::{Key, InputEvent, Input, InputType, InputTranslate};
 use graphics;
 use std::sync::Arc;
 use std;
@@ -28,13 +30,32 @@ use vulkano::instance::Instance;
 use self::vulkano_win::VkSurfaceBuild;
 use std::time::Duration;
 
-pub struct VulkanApplication {
-    pub application: Application,
-    pub window: vulkano_win::Window
+pub struct VulkanBackend {
+    pub name: &'static str,
+    pub lifetime: Option<u64>,
+    pub title: &'static str
 }
 
-impl VulkanApplication {
-    pub fn init(name: &'static str, title: &'static str, lifetime: Option<u64>, listener: Box<ApplicationListener>) -> Self {
+impl backends::ApplicationAdapter for VulkanBackend {
+    fn init(&mut self, listener: Box<logic::ApplicationListener>) -> core::Application {
+        let width = 1024;
+        let height = 768;
+        let application = core::Application {
+            listener: listener,
+            name: self.name,
+            platform: "vulkano",
+            graphics: graphics::Graphics::new(width, height, self.title, true),
+            input: Input::new(),
+            lifetime: self.lifetime,
+        };
+        self.init_graphic(width, height, self.title);
+        application.listener.as_ref().init();
+        application
+    }
+}
+
+impl VulkanBackend {
+    fn init_graphic(&self, width: u32, height: u32, title: &str) {
         let width = 1024;
         let height = 768;
         let instance = {
@@ -46,30 +67,13 @@ impl VulkanApplication {
         let physical = vulkano::instance::PhysicalDevice::enumerate(&instance)
             .next().expect("no device available");
         println!("Using device: {} (type: {:?})", physical.name(), physical.ty());
-        let window = winit::WindowBuilder::new().with_title(title.to_string())
+        let window = winit::WindowBuilder::new().with_title(self.title.to_string())
             .with_dimensions(width, height).build_vk_surface(&instance).unwrap();
-        let result = VulkanApplication {
-            application: Application {
-                listener: listener,
-                name: name,
-                platform: "vulkano",
-                graphics: graphics::Graphics::new(width, height, title),
-                input: Input::new(),
-                lifetime: lifetime,
-            },
-            window: window
-        };
-        result.init_graphic(&physical, width,  height, title);
-        result.application.listener.as_ref().init();
-        result
-    }
-
-    fn init_graphic(&self, physical: &vulkano::instance::PhysicalDevice, width: u32, height: u32, title: &str) {
         println!("graphic new start");
         let queue = physical.queue_families()
             .find(|q| {
                 // We take the first queue that supports drawing to our window.
-                q.supports_graphics() && self.window.surface().is_supported(q).unwrap_or(false)
+                q.supports_graphics() && window.surface().is_supported(q).unwrap_or(false)
             })
             .expect("couldn't find a graphical queue family");
 
@@ -89,7 +93,7 @@ impl VulkanApplication {
         let queue = queues.next().unwrap();
 
         let (swapchain, images) = {
-            let caps = self.window.surface()
+            let caps = window.surface()
                 .get_capabilities(&physical)
                 .expect("failed to get surface capabilities");
             let dimensions = caps.current_extent.unwrap_or([width, height]);
@@ -97,7 +101,7 @@ impl VulkanApplication {
             let alpha = caps.supported_composite_alpha.iter().next().unwrap();
             let format = caps.supported_formats[0].0;
             vulkano::swapchain::Swapchain::new(&device,
-                                               &self.window.surface(),
+                                               window.surface(),
                                                2,
                                                format,
                                                dimensions,
@@ -164,13 +168,13 @@ impl VulkanApplication {
                                   geometry_shader: None,
                                   viewport: ViewportsState::Fixed {
                                       data: vec![(Viewport {
-        origin: [0.0, 0.0],
-        depth_range: 0.0..1.0,
-        dimensions:
-        [images[0].dimensions()[0] as f32,
-        images[0].dimensions()[1] as f32],
-        },
-        Scissor::irrelevant())],
+                                          origin: [0.0, 0.0],
+                                          depth_range: 0.0..1.0,
+                                          dimensions:
+                                          [images[0].dimensions()[0] as f32,
+                                              images[0].dimensions()[1] as f32],
+                                      },
+                                                  Scissor::irrelevant())],
                                   },
                                   raster: Default::default(),
                                   multisample: Multisample::disabled(),
@@ -213,30 +217,6 @@ impl VulkanApplication {
         }
     }
 }
-
-impl ApplicationAdapter for VulkanApplication {
-
-    fn get_application(&mut self) -> &mut Application{
-        &mut self.application
-    }
-
-    fn process_input(&mut self) {
-        for event in self.window.window().poll_events() {
-            let transformed_event: InputEvent = self.transform_event(&event);
-            &self.application.input.events_queue.push_back(transformed_event);
-        }
-        &self.application.input.handle();
-    }
-
-    fn update(&mut self) {
-        //set delta time to graphics
-        self.application.listener.as_mut().update();
-    }
-    fn render(&mut self) {
-        self.application.listener.as_mut().render();
-    }
-}
-
 
 impl InputTranslate for winit::VirtualKeyCode {
     fn translate(&self) -> Key {

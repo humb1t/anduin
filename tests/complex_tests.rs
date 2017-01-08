@@ -1,22 +1,20 @@
 extern crate anduin;
 
 use anduin::backends::console;
+use anduin::backends::ApplicationAdapter;
 use anduin::logic;
+use anduin::logic::lcm;
+use anduin::input;
 use anduin::graphics;
 
 #[test]
 fn test_simple_backend() {
     let game = Game{};
-    let graphics = graphics::Graphics::new(640, 480, "Title");
-    let control = Control{};
-    let application = logic::Application {
+    let mut backend = console::ConsoleBackend{
         name: "Test",
-        platform: "multi",
-        listener: Box::new(game),
-        graphics: graphics,
-        input: control,
-        lifetime: None
+        lifetime: Some(5),
     };
+    let mut application = backend.init(Box::new(game));
     let game_loop = lcm::GameLoop::new();
     game_loop.run(&mut application);
     application.listener.as_mut().exit();
@@ -24,12 +22,12 @@ fn test_simple_backend() {
 
 struct Control{}
 
-impl InputProcessor for Control {
-    fn key_down(&self, key: Key)
+impl input::InputProcessor for Control {
+    fn key_down(&self, key: input::Key)
     {
         println!("Keypushed down: {:?}", key)
     }
-    fn key_up(&self, key: Key)
+    fn key_up(&self, key: input::Key)
     {
         println!("Keypushed up: {:?}", key)
     }

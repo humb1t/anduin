@@ -48,8 +48,8 @@ winit = "0.5"
 #vulkan backend
 gl = "0.6"
 libc = "0.2"
-vulkano = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
-vulkano-win = "0.2.0"#{git = "https://github.com/tomaka/vulkano.git"}
+vulkano = "0.3.0"#{git = "https://github.com/tomaka/vulkano.git"}
+vulkano-win = "0.3.0"#{git = "https://github.com/tomaka/vulkano.git"}
 
 #gfx backend
 gfx="0.12"

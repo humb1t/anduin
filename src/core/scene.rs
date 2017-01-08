@@ -23,14 +23,14 @@ pub struct Node<'a> {
     name: &'static str,
     parent: PhantomData<&'a Node<'a>>,
     children: Vec<Node<'a>>,
-    actor: Option<Box<logic::Actable + 'a>>,
+    actor: Option<Box<logic::Actor + 'a>>,
     input_processor: Option<Box<input::InputProcessor + 'a>>,
     renderer: Option<Box<graphics::Drawable + 'a>>, // TODO: add user_data Map
 }
 
 impl<'a> Node<'a> {
     pub fn build<A, I, D>(name: &'static str, actor: A, input_processor: I, renderer: D) -> Self
-        where A: 'a + logic::Actable,
+        where A: 'a + logic::Actor,
               I: 'a + input::InputProcessor,
               D: 'a + graphics::Drawable
     {
