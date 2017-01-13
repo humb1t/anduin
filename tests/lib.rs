@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 extern crate anduin;
 
 use anduin::logic;
@@ -12,9 +13,6 @@ use anduin::logic::ApplicationListener;
 use anduin::files;
 use std::thread::sleep;
 use std::time::Duration;
-use std::path::PathBuf;
-use std::str::FromStr;
-use std::fs;
 
 mod complex_tests;
 
@@ -27,7 +25,7 @@ fn create_test_vulkan_app() {
     };
     let mut vulkan_app = vulkan.init(Box::new(Game{}));
     println!("application created");
-    let game_loop = lcm::GameLoop::new();
+    let mut game_loop = lcm::GameLoop::default();
     println!("game_loop created");
     vulkan_app.input.add_input_processor(Box::new(InputProcessorStuct{}));
     println!("add_input_processor finished");
@@ -64,7 +62,7 @@ fn play_sound() {
 
 #[test]
 fn create_game_loop() {
-    let game_loop = lcm::GameLoop::new();
+    let game_loop = lcm::GameLoop::default();
     println!("Loop is created {:?}", game_loop);
 }
 
@@ -74,6 +72,7 @@ fn create_simple_scene() {
     println!("Simple scene is created {:?}", scene);
 }
 
+#[test]
 fn create_simple_game()
 {
     let scene = core::scene::Stage {

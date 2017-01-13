@@ -28,6 +28,7 @@ pub struct Node<'a> {
     renderer: Option<Box<graphics::Drawable + 'a>>, // TODO: add user_data Map
 }
 
+//TODO: derive builder pattern
 impl<'a> Node<'a> {
     pub fn build<A, I, D>(name: &'static str, actor: A, input_processor: I, renderer: D) -> Self
         where A: 'a + logic::Actor,

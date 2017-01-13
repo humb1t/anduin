@@ -16,6 +16,7 @@ enum Peripheral {
 }
 
 pub struct Input {
+    backend: Box<InputBackend>,
     input_processors: Vec<Box<InputProcessor>>,
     input_events_processors: HashMap<InputType, Vec<Box<InputProcessor>>>,
     keys_states: HashMap<Key, bool>,
@@ -23,8 +24,9 @@ pub struct Input {
 }
 
 impl Input {
-    pub fn new() -> Self {
+    pub fn new(backend: Box<InputBackend>) -> Self {
         Input {
+            backend: backend,
             events_queue: VecDeque::new(),
             input_events_processors: HashMap::new(),
             input_processors: Vec::new(),
@@ -37,12 +39,9 @@ impl Input {
     }
 
     pub fn handle(&mut self) {
-        let queue_size = self.events_queue.len();
-        while !self.events_queue.is_empty() {
-            match self.events_queue.pop_back() {
-                Some(event) => self.handle_input_event(event),
-                None => ()
-            }
+        self.events_queue.clear();
+        for event in self.backend.as_ref().poll_events() {
+            self.handle_input_event(event);
         }
     }
 
@@ -66,6 +65,14 @@ impl Input {
             None => ()
         }
     }
+}
+
+///Main purpose of input backend - collect or input in background and poll it by request
+pub trait InputBackend{
+    ///Initialize and start to handle input
+    fn init(&self);
+    ///Pop input into result iterator
+    fn poll_events(&self) -> Vec<InputEvent>;
 }
 
 pub trait InputTranslate {
@@ -101,7 +108,7 @@ pub enum InputType {
     KeyDown,
     KeyUp,
     WindowMoved,
-    WindowResized,
+    WindowSizeChanged,
     WindowClosed,
     WindowFocused,
     MouseMoved,
@@ -117,7 +124,7 @@ enum Button {
     FORWARD,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]//Implement from srt
 pub enum Key {
     /// The '1' key over the letters.
     Key1,
@@ -257,8 +264,8 @@ pub enum Key {
     Multiply,
     Mute,
     MyComputer,
-    NavigateForward, // also called "Prior"
-    NavigateBackward, // also called "Next"
+    NavigateForward,    // also called "Prior"
+    NavigateBackward,    // also called "Next"
     NextTrack,
     NoConvert,
     NumpadComma,

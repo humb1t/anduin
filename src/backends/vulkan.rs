@@ -6,6 +6,7 @@ use backends;
 use core;
 use logic;
 use input::{Key, InputEvent, Input, InputType, InputTranslate};
+use input;
 use graphics;
 use std::sync::Arc;
 use std;
@@ -45,12 +46,25 @@ impl backends::ApplicationAdapter for VulkanBackend {
             name: self.name,
             platform: "vulkano",
             graphics: graphics::Graphics::new(width, height, self.title, true),
-            input: Input::new(),
+            input: Input::new(Box::new(VulkanInputBackend{})),
             lifetime: self.lifetime,
         };
         self.init_graphic(width, height, self.title);
         application.listener.as_ref().init();
         application
+    }
+}
+
+struct VulkanInputBackend {
+
+}
+
+impl input::InputBackend for VulkanInputBackend {
+    fn poll_events(&self) -> Vec<InputEvent> {
+        unimplemented!()
+    }
+    fn init(&self){
+
     }
 }
 
