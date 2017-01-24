@@ -40,7 +40,7 @@ impl Input {
 
     pub fn handle(&mut self) {
         self.events_queue.clear();
-        for event in self.backend.as_ref().poll_events() {
+        for event in self.backend.as_mut().poll_events() {
             self.handle_input_event(event);
         }
     }
@@ -50,6 +50,10 @@ impl Input {
             Some(value) => *value,
             None => false,
         }
+    }
+
+    pub fn stop(&self) {
+        self.backend.as_ref().stop()
     }
 
     fn handle_input_event(&self, event: InputEvent) {
@@ -72,7 +76,8 @@ pub trait InputBackend{
     ///Initialize and start to handle input
     fn init(&self);
     ///Pop input into result iterator
-    fn poll_events(&self) -> Vec<InputEvent>;
+    fn poll_events(&mut self) -> Vec<InputEvent>;
+    fn stop(&self);
 }
 
 pub trait InputTranslate {

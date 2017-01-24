@@ -60,11 +60,14 @@ struct VulkanInputBackend {
 }
 
 impl input::InputBackend for VulkanInputBackend {
-    fn poll_events(&self) -> Vec<InputEvent> {
+    fn poll_events(&mut self) -> Vec<InputEvent> {
         unimplemented!()
     }
     fn init(&self){
 
+    }
+    fn stop(&self) {
+        unimplemented!()
     }
 }
 

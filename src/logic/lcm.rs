@@ -42,7 +42,8 @@ impl GameLoop {
                 Some(lifetime) => {
                     match lifetime {
                         0 => {
-                            application.graphics.should_close = true
+                            application.graphics.should_close = true;
+                            application.input.stop();
                         },
                         _ => {
                             let delta_time = application.graphics.delta_time.num_seconds() as u64;
@@ -62,8 +63,8 @@ impl GameLoop {
             application.listener.as_mut().update();
             if curr_time >= next_time {
                 next_time = next_time + application.graphics.delta_time;
-                let is_time_to_render = (curr_time < next_time);
-                let is_too_much_frames_skipped = (self.skipped_frames > self.max_skipped_frames);
+                let is_time_to_render = curr_time < next_time;
+                let is_too_much_frames_skipped = self.skipped_frames > self.max_skipped_frames;
                 let is_render: bool = is_time_to_render || is_too_much_frames_skipped;
                 match is_render {
                     true => {
