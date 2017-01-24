@@ -1,3 +1,4 @@
+use std;
 use std::io::{self, Read};
 use std::thread;
 use std::sync::{Arc, Mutex};
@@ -8,7 +9,7 @@ use std::collections::VecDeque;
 use backends;
 use core;
 use graphics;
-use input::{self, InputBackend};
+use input::{self, InputBackend, InputTranslate};
 use logic;
 
 pub struct ConsoleBackend {
@@ -72,47 +73,72 @@ impl input::InputBackend for ConsoleInputBackend {
             }
         }
         return result
-        /*let mut input = String::new();
-        match io::stdin().read_line(&mut input) {
-            Ok(n) => {
-                println!("{} bytes read", n);
-                println!("{}", input);
-            }
-            Err(error) => println!("error: {}", error),
-        }*/
-    }
-
-    fn init(&self) {
-        let cloned_sender = self.sender.clone();
-        let arc = self.stopped.clone();
-        thread::spawn(move || {
-            let mut input = String::new();
-            let mut i = 0;
-            while  i < 5 {
-                match io::stdin().read_line(&mut input) {
-                    Ok(n) => {
-                        println!("{} bytes read", n);
-                        println!("{}", input);
-                    }
-                    Err(error) => println!("error: {}", error),
-                }
-                let event = input::InputEvent {
-                    event_type: input::InputType::KeyDown,
-                    key: input::Key::A,
-                };
-                cloned_sender.send(event).unwrap();
-                i += 1;
-            }
-        });
         /*
         for _ in 0..10 {
             let j = receiver.recv().unwrap();
             assert!(0 <= j && j < 10);
         }*/
-        //TODO: async get input from std::in
+    }
+
+    fn init(&self) {
+        let cloned_sender = self.sender.clone();
+        let should_stop = self.stopped.clone();
+        thread::spawn(move || {
+            let mut char_holder = [0];
+            while  !should_stop.load(Ordering::Relaxed) {
+                match io::stdin().read(&mut char_holder) {
+                    Ok(bytes_count) => {
+                        let character = char_holder[0] as char;
+                        let pressedKey = character.translate();
+                        println!("CHAR {:?}", pressedKey);
+                        let event = input::InputEvent {
+                            event_type: input::InputType::KeyDown,
+                            key: input::Key::A,
+                        };
+                        cloned_sender.send(event).unwrap();
+                    }
+                    Err(error) => println!("error: {}", error),
+                }
+            }
+        });
     }
 
     fn stop(&self) {
         self.stopped.store(false, Ordering::Release);
+    }
+}
+
+impl InputTranslate for char {
+    fn translate(&self) -> input::Key {
+        match *self {
+            'a' => input::Key::A,
+            'b' => input::Key::B,
+            'c' => input::Key::C,
+            'd' => input::Key::D,
+            'e' => input::Key::E,
+            'f' => input::Key::F,
+            'g' => input::Key::G,
+            'h' => input::Key::H,
+            'i' => input::Key::I,
+            'j' => input::Key::J,
+            'k' => input::Key::K,
+            'l' => input::Key::L,
+            'm' => input::Key::M,
+            'n' => input::Key::N,
+            'o' => input::Key::O,
+            'p' => input::Key::P,
+            'q' => input::Key::Q,
+            'r' => input::Key::R,
+            's' => input::Key::S,
+            't' => input::Key::T,
+            'u' => input::Key::U,
+            'v' => input::Key::V,
+            'w' => input::Key::W,
+            'x' => input::Key::X,
+            'y' => input::Key::Y,
+            'z' => input::Key::Z,
+            '\n' => input::Key::NumpadEnter,
+            _ => input::Key::Escape
+        }
     }
 }
