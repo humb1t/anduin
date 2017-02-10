@@ -20,7 +20,7 @@ impl GameLoop {
     pub fn default() -> Self {
         GameLoop {
             max_skipped_frames: 5,
-            max_time_dif: time::Duration::milliseconds(100),
+            max_time_dif: time::Duration::milliseconds(1000),
             skipped_frames: 0
         }
     }

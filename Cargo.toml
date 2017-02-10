@@ -64,7 +64,7 @@ image = "0.10"
 #graphics section ---------/
 
 #sound
-ears = "0.3"
+ears = "0.4"
 
 [build-dependencies]
 vk-sys = "0.1.1"

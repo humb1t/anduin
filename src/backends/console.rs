@@ -64,8 +64,12 @@ impl ConsoleInputBackend {
 
 impl input::InputBackend for ConsoleInputBackend {
     fn poll_events(&mut self) -> Vec<input::InputEvent> {
+        for event in self.receiver.try_iter() {
+            self.events_queue.push_back(event);
+        }
         let queue_size = self.events_queue.len();
         let mut result = Vec::with_capacity(queue_size);
+        println!("ConsoleInputBackend::poll_events queue_size {} for result {:?}", queue_size, result);
         while !self.events_queue.is_empty() {
             match self.events_queue.pop_back() {
                 Some(event) => result.push(event),
@@ -73,11 +77,6 @@ impl input::InputBackend for ConsoleInputBackend {
             }
         }
         return result
-        /*
-        for _ in 0..10 {
-            let j = receiver.recv().unwrap();
-            assert!(0 <= j && j < 10);
-        }*/
     }
 
     fn init(&self) {
@@ -89,11 +88,11 @@ impl input::InputBackend for ConsoleInputBackend {
                 match io::stdin().read(&mut char_holder) {
                     Ok(bytes_count) => {
                         let character = char_holder[0] as char;
-                        let pressedKey = character.translate();
-                        println!("CHAR {:?}", pressedKey);
+                        let pressed_key = character.translate();
+                        println!("CHAR {:?}", pressed_key);
                         let event = input::InputEvent {
                             event_type: input::InputType::KeyDown,
-                            key: input::Key::A,
+                            key: pressed_key,
                         };
                         cloned_sender.send(event).unwrap();
                     }
