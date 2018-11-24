@@ -1,2 +1,35 @@
-This is my first project on rust and my first attemp to create own game engine.
-It's aim - build fast, safe, usefriendly game-engine based on new technologies/languages such as rust and vulkan api.
+# Anduin
+
+## What is it?
+
+OSS Game Engine written in Rust by enthusiasts with different backgrounds.
+It aims for speed, concurrency and modern technologies.
+
+### Rendering engine
+
+Our rendering engine is based on [Vulkano](https://vulkano.rs/) - Rust Wrapper around Vulkan API.
+
+### Audio engine
+
+//TODO
+
+### Physics engine
+
+//TODO
+
+### Artificial intelligence
+
+//TODO
+
+## Documentation
+
+## Setup
+
+## Contributing
+
+Read our [Contribution Guide](CONTRIBUTING.md).
+
+## License
+
+We use GNU AGPLv3.
+
